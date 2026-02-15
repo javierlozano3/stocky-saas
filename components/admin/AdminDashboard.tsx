@@ -36,7 +36,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
     const [varieties, setVarieties] = useState<Variety[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [orders, setOrders] = useState<OrderWithTimestamp[]>([]);
-    const [businessConfig, setBusinessConfig] = useState({ whatsapp: '' });
+    const [businessConfig, setBusinessConfig] = useState({ whatsapp: '', logoUrl: '', abierto: true });
     
     // Modals state
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
@@ -95,7 +95,11 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
         const unsubConfig = onSnapshot(doc(db, 'empresas', negocioId), (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
-                setBusinessConfig({ whatsapp: data.whatsapp || '' });
+                setBusinessConfig({ 
+            whatsapp: data.whatsapp || '', 
+            logoUrl: data.logoUrl || '',
+            abierto: data.abierto ?? true 
+        });
             }
         });
 
@@ -804,6 +808,28 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                             </div>
                             <p className="text-xs text-gray-500 mt-2">Este es el número donde recibirás los pedidos de los clientes.</p>
                         </div>
+
+                        <div className="pt-4 border-t border-gray-100">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">URL del Logo (Imagen)</label>
+                            <div className="flex gap-2">
+                                <input 
+                                    type="text" 
+                                    placeholder="https://tu-imagen.com/logo.png"
+                                    className="flex-1 border border-gray-200 rounded-lg p-2 text-sm"
+                                    value={businessConfig.logoUrl || ''}
+                                    onChange={(e) => setBusinessConfig({ ...businessConfig, logoUrl: e.target.value })}
+                                />
+                                <Button onClick={async () => {
+                                    const docRef = doc(db, 'empresas', negocioId);
+                                    await updateDoc(docRef, { logoUrl: businessConfig.logoUrl });
+                                    alert("Logo actualizado");
+                                }}>
+                                    <Save size={18} />
+                                </Button>
+                            </div>
+                            <p className="text-[10px] text-gray-400 mt-1">Pega el link de una imagen (png o jpg) para que aparezca en el menú.</p>
+                        </div>
+
                     </div>
                 )}
             </main>

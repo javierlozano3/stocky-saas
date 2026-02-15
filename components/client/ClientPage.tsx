@@ -50,20 +50,25 @@ const MenuRow = ({ variety, onAdd }: { variety: Variety, onAdd: (qty: number) =>
 export const ClientPage = ({ negocioId }: { negocioId: string }) => {
     const [variedades, setVariedades] = useState<Variety[]>([]);
     const [loading, setLoading] = useState(true);
-    const [whatsappNumber, setWhatsappNumber] = useState('');
     const [cart, setCart] = useState<CartItem[]>([]);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [customerName, setCustomerName] = useState('');
     const [customerPhone, setCustomerPhone] = useState('');
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [lastOrderCode, setLastOrderCode] = useState('');
+    const [businessConfig, setBusinessConfig] = useState({ whatsapp: '', logoUrl: '', abierto: true });
 
     useEffect(() => {
         // Referencia a: empresas > [negocioId] > productos
         const productosRef = collection(db, 'empresas', negocioId, 'productos');
         const unsub = onSnapshot(doc(db, 'empresas', negocioId), (docSnap) => {
             if (docSnap.exists()) {
-                setWhatsappNumber(docSnap.data().whatsapp || '');
+                const data = docSnap.data();
+                setBusinessConfig({
+                    whatsapp: data.whatsapp || '',
+                    logoUrl: data.logoUrl || '',
+                    abierto: data.abierto ?? true
+                });
             }
         });
         const unsubscribe = onSnapshot(productosRef, (snapshot) => {
@@ -203,18 +208,22 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
     return (
         <div className="min-h-screen pb-24 bg-orange-50/30 font-sans">
             {/* Header */}
-            <header className="sticky top-0 z-10 bg-white/90 backdrop-blur-md border-b border-orange-100 px-6 py-4 shadow-sm">
-                <div className="max-w-2xl mx-auto flex items-center justify-between">
-                    <div>
-                        <h1 className="text-xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
-                            Empanadas <span className="bg-red-600 text-white px-2 py-0.5 rounded-lg text-sm rotate-1">Stocky</span>
-                        </h1>
-                        <p className="text-xs text-gray-500 font-medium">@{negocioId}</p>
+            <header className="text-center py-8">
+                {businessConfig.logoUrl ? (
+                    <img 
+                        src={businessConfig.logoUrl} 
+                        alt="Logo del negocio" 
+                        className="mx-auto h-20 w-auto mb-4 object-contain"
+                    />
+                ) : (
+                    <div className="w-16 h-16 bg-red-600 rounded-2xl mx-auto mb-4 flex items-center justify-center text-white text-2xl font-bold">
+                        {negocioId.charAt(0).toUpperCase()}
                     </div>
-                    <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold border border-green-200 flex items-center gap-1">
-                        <CheckCircle size={12} /> Abierto
-                    </div>
-                </div>
+                )}
+                <h1 className="text-3xl font-black text-gray-900 capitalize tracking-tight">
+                    {negocioId.replace('-', ' ')}
+                </h1>
+                <p className="text-gray-500 font-medium mt-1">Fábrica de Empanadas</p>
             </header>
 
             {/* Menu List */}
@@ -301,7 +310,6 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                             <span className="text-red-600">${calculateTotal().toLocaleString()}</span>
                         </div>
                     </div>
-
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Nombre para retirar</label>
@@ -367,7 +375,7 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                             });
                             msg += `\n*Total: $${total}*`;
                             
-                            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+                            const whatsappUrl = `https://wa.me/${businessConfig.whatsapp}?text=${encodeURIComponent(msg)}`;
                             window.open(whatsappUrl, '_blank');
                             
                             // Limpiar carrito y cerrar
