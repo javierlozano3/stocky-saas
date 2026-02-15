@@ -85,7 +85,7 @@ export const AdminLogin = ({ onLogin, empresaId }: AdminLoginProps) => {
                     </Button>
 
                     <p className="text-center text-xs text-gray-400 mt-4">
-                        Powered by <span className="font-bold text-gray-600">Stocky SaaS</span>
+                        © 2026 Powered by <a href="https://vynex.ar" target="_blank" rel="noopener noreferrer" className="hover:text-red-500 transition-colors font-bold">VYNEX</a>
                     </p>
                 </form>
             </div>
