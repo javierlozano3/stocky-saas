@@ -594,9 +594,18 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                 </nav>
 
                 <div className="mt-auto pt-8 border-t border-gray-100">
-                    <div className="bg-gray-50 p-4 rounded-xl">
-                        <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Empresa</p>
-                        <p className="font-bold text-gray-900 truncate">{negocioId}</p>
+                    <div className="bg-gray-50 p-4 rounded-xl flex items-center gap-3">
+                        {businessConfig.logoUrl ? (
+                            <img src={businessConfig.logoUrl} alt="Logo" className="w-10 h-10 object-contain rounded-lg bg-white border border-gray-200 p-1" />
+                        ) : (
+                            <div className="w-10 h-10 bg-white border border-gray-200 rounded-lg flex items-center justify-center text-gray-400 font-bold text-xs">
+                                {negocioId.charAt(0).toUpperCase()}
+                            </div>
+                        )}
+                        <div className="overflow-hidden">
+                            <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-0.5">Empresa</p>
+                            <p className="font-bold text-gray-900 truncate text-sm">{businessConfig.nombre || negocioId}</p>
+                        </div>
                     </div>
                     <button onClick={() => setIsAuthenticated(false)} className="text-xs text-red-500 mt-3 font-medium hover:underline w-full text-left px-4">Cerrar Sesión</button>
                 </div>
@@ -1129,24 +1138,27 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                             const storageRef = ref(storage, fileName);
                                             const uploadTask = uploadBytesResumable(storageRef, logoFile);
 
-                                            uploadTask.on('state_changed',
-                                                (snapshot) => {
-                                                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                                    setUploadProgress(progress);
-                                                },
-                                                (error) => {
-                                                    console.error("Upload error:", error);
-                                                    alert("Error subiendo imagen: " + error.message);
-                                                    setIsSaving(false);
-                                                }
-                                            );
-
-                                            // Wait for upload to complete
-                                            await uploadTask;
-
-                                            // Get the URL
-                                            finalLogoUrl = await getDownloadURL(storageRef);
-                                            console.log("Logo uploaded successfully:", finalLogoUrl);
+                                            await new Promise<void>((resolve, reject) => {
+                                                uploadTask.on('state_changed',
+                                                    (snapshot) => {
+                                                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                                        setUploadProgress(progress);
+                                                    },
+                                                    (error) => {
+                                                        console.error("Upload error:", error);
+                                                        reject(error);
+                                                    },
+                                                    async () => {
+                                                        try {
+                                                            finalLogoUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                                                            console.log("Logo uploaded successfully:", finalLogoUrl);
+                                                            resolve();
+                                                        } catch (err) {
+                                                            reject(err);
+                                                        }
+                                                    }
+                                                );
+                                            });
                                         }
 
                                         // 2. Update Firestore
