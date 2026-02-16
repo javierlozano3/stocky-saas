@@ -4,12 +4,12 @@
 import React, { useState, useEffect } from 'react';
 import { Order, Variety } from '@/types';
 import { Button } from '@/components/ui/Button';
-import { Package, Utensils, BarChart, Plus, ToggleLeft, ToggleRight, LayoutDashboard, Search, FileDown, Edit, X, Save, AlertTriangle, Users, Clock, TrendingUp, AlertCircle, DollarSign } from 'lucide-react';
+import { Package, Utensils, BarChart, Plus, ToggleLeft, ToggleRight, LayoutDashboard, Search, FileDown, Edit, X, Save, AlertTriangle, Users, Clock, TrendingUp, AlertCircle, DollarSign, Menu } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { AdminLogin } from '@/components/admin/AdminLogin';
 import { db, storage } from '@/lib/firebase';
 import { deleteDoc, serverTimestamp, addDoc, collection, onSnapshot, query, orderBy, doc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 
 const NavItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
@@ -62,6 +62,9 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
     const [editingOrder, setEditingOrder] = useState<Order | null>(null);
     const [editReason, setEditReason] = useState('');
     const [varietyToAdd, setVarietyToAdd] = useState<string>('');
+
+    // Mobile Menu State
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // Inventory Modal State
     const [inventoryModalOpen, setInventoryModalOpen] = useState(false);
@@ -578,22 +581,56 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
     const annualStats = getAnnualStats();
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row font-sans">
-            {/* Sidebar */}
-            <aside className="w-full md:w-64 bg-white border-r border-gray-200 p-6 flex-shrink-0 sticky top-0 h-auto md:h-screen overflow-y-auto">
-                <Link href="/" className="flex items-center gap-2 mb-8 px-2 hover:opacity-80 transition-opacity">
-                    <LayoutDashboard className="text-red-600" />
+        <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row font-sans relative">
+            {/* Mobile Header */}
+            <div className="md:hidden bg-white p-4 flex items-center justify-between border-b border-gray-200 sticky top-0 z-20 shadow-sm">
+                <div className="flex items-center gap-2">
+                    <LayoutDashboard className="text-red-600" size={24} />
                     <span className="font-bold text-xl tracking-tight text-gray-900">Stocky<span className="text-red-600">.</span></span>
-                </Link>
+                </div>
+                <button
+                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                    className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg active:scale-95 transition-all"
+                >
+                    {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+            </div>
+
+            {/* Overlay for mobile */}
+            {isMobileMenuOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-30 md:hidden backdrop-blur-sm transition-opacity"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+
+            {/* Sidebar */}
+            <aside className={`
+                fixed inset-y-0 left-0 z-40 w-72 bg-white border-r border-gray-200 p-6 shadow-2xl transition-transform duration-300 ease-in-out
+                md:translate-x-0 md:static md:h-screen md:shadow-none md:w-64 md:sticky md:top-0
+                ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+            `}>
+                <div className="flex justify-between items-center mb-8">
+                    <Link href="/" className="flex items-center gap-2 px-2 hover:opacity-80 transition-opacity">
+                        <LayoutDashboard className="text-red-600" />
+                        <span className="font-bold text-xl tracking-tight text-gray-900">Stocky<span className="text-red-600">.</span></span>
+                    </Link>
+                    <button
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="md:hidden p-1 text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                        <X size={20} />
+                    </button>
+                </div>
 
                 <nav className="space-y-2">
-                    <NavItem icon={<Package size={20} />} label="Pedidos" active={activeTab === 'orders'} onClick={() => setActiveTab('orders')} />
-                    <NavItem icon={<Utensils size={20} />} label="Inventario" active={activeTab === 'inventory'} onClick={() => setActiveTab('inventory')} />
-                    <NavItem icon={<BarChart size={20} />} label="Reportes" active={activeTab === 'reports'} onClick={() => setActiveTab('reports')} />
-                    <NavItem icon={<X size={20} />} label="Ajustes" active={activeTab === 'settings'} onClick={() => setActiveTab('settings')} />
+                    <NavItem icon={<Package size={20} />} label="Pedidos" active={activeTab === 'orders'} onClick={() => { setActiveTab('orders'); setIsMobileMenuOpen(false); }} />
+                    <NavItem icon={<Utensils size={20} />} label="Inventario" active={activeTab === 'inventory'} onClick={() => { setActiveTab('inventory'); setIsMobileMenuOpen(false); }} />
+                    <NavItem icon={<BarChart size={20} />} label="Reportes" active={activeTab === 'reports'} onClick={() => { setActiveTab('reports'); setIsMobileMenuOpen(false); }} />
+                    <NavItem icon={<X size={20} />} label="Ajustes" active={activeTab === 'settings'} onClick={() => { setActiveTab('settings'); setIsMobileMenuOpen(false); }} />
                 </nav>
 
-                <div className="mt-auto pt-8 border-t border-gray-100">
+                <div className="mt-auto pt-8 border-t border-gray-100 absolute bottom-6 left-6 right-6 md:static">
                     <div className="bg-gray-50 p-4 rounded-xl flex items-center gap-3">
                         {businessConfig.logoUrl ? (
                             <img src={businessConfig.logoUrl} alt="Logo" className="w-10 h-10 object-contain rounded-lg bg-white border border-gray-200 p-1" />
@@ -1063,7 +1100,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                     <div className="flex items-center gap-6">
                                         <div className="w-24 h-24 bg-white rounded-xl border border-gray-200 shadow-sm flex items-center justify-center overflow-hidden relative group">
                                             {logoFile ? (
-                                                <img src={URL.createObjectURL(logoFile)} alt="Preview" className="w-full h-full object-contain p-2" />
+                                                <img src={URL.createObjectURL(logoFile!)} alt="Preview" className="w-full h-full object-contain p-2" />
                                             ) : businessConfig.logoUrl ? (
                                                 <img src={businessConfig.logoUrl} alt="Logo" className="w-full h-full object-contain p-2" />
                                             ) : (
@@ -1138,9 +1175,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                             const storageRef = ref(storage, fileName);
 
                                             // Simple upload
-                                            // @ts-ignore
-                                            const { uploadBytes } = await import('firebase/storage');
-                                            await uploadBytes(storageRef, logoFile);
+                                            await uploadBytes(storageRef, logoFile!);
 
                                             // Get the URL
                                             finalLogoUrl = await getDownloadURL(storageRef);
