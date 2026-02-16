@@ -1136,29 +1136,15 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                             // Create a unique file name
                                             const fileName = `logos/${negocioId}/${Date.now()}_${logoFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                                             const storageRef = ref(storage, fileName);
-                                            const uploadTask = uploadBytesResumable(storageRef, logoFile);
 
-                                            await new Promise<void>((resolve, reject) => {
-                                                uploadTask.on('state_changed',
-                                                    (snapshot) => {
-                                                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                                        setUploadProgress(progress);
-                                                    },
-                                                    (error) => {
-                                                        console.error("Upload error:", error);
-                                                        reject(error);
-                                                    },
-                                                    async () => {
-                                                        try {
-                                                            finalLogoUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                                                            console.log("Logo uploaded successfully:", finalLogoUrl);
-                                                            resolve();
-                                                        } catch (err) {
-                                                            reject(err);
-                                                        }
-                                                    }
-                                                );
-                                            });
+                                            // Simple upload
+                                            // @ts-ignore
+                                            const { uploadBytes } = await import('firebase/storage');
+                                            await uploadBytes(storageRef, logoFile);
+
+                                            // Get the URL
+                                            finalLogoUrl = await getDownloadURL(storageRef);
+                                            console.log("Logo uploaded successfully:", finalLogoUrl);
                                         }
 
                                         // 2. Update Firestore
