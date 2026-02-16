@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react'; // Agregamos useEffect
 import { CartItem, Variety } from '@/types';
-import { ShoppingBag, ChevronRight, CheckCircle, Loader2, LayoutDashboard } from 'lucide-react'; // Loader para el estado de carga
+import { ShoppingBag, ChevronRight, CheckCircle, Loader2, LayoutDashboard, Trash2 } from 'lucide-react'; // Loader para el estado de carga
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
@@ -283,21 +283,36 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
             {/* Floating Cart */}
             {cart.length > 0 && (
                 <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white via-white to-transparent z-40">
-                    <div className="max-w-2xl mx-auto bg-gray-900 text-white rounded-2xl p-4 shadow-2xl flex items-center justify-between cursor-pointer active:scale-95 transition-transform ring-4 ring-orange-100"
-                        onClick={() => setIsCheckoutOpen(true)}>
-                        <div className="flex items-center gap-3">
-                            <div className="bg-gray-800 p-2 rounded-xl">
-                                <ShoppingBag className="text-orange-400" />
+                    <div className="max-w-2xl mx-auto flex gap-3 items-stretch">
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (confirm('¿Estás seguro de que quieres cancelar el pedido y vaciar el carrito?')) {
+                                    setCart([]);
+                                }
+                            }}
+                            className="bg-white text-red-500 border-2 border-red-100 rounded-2xl px-4 shadow-xl flex items-center justify-center hover:bg-red-50 transition-colors active:scale-95"
+                            aria-label="Vaciar carrito"
+                        >
+                            <Trash2 size={24} />
+                        </button>
+
+                        <div className="flex-1 bg-gray-900 text-white rounded-2xl p-4 shadow-2xl flex items-center justify-between cursor-pointer active:scale-95 transition-transform ring-4 ring-orange-100"
+                            onClick={() => setIsCheckoutOpen(true)}>
+                            <div className="flex items-center gap-3">
+                                <div className="bg-gray-800 p-2 rounded-xl">
+                                    <ShoppingBag className="text-orange-400" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-400 font-medium">
+                                        {totalDozens % 1 === 0 ? totalDozens : totalDozens.toFixed(1).replace('.', ',')} Docenas en total
+                                    </p>
+                                    <p className="text-xl font-bold tracking-tight">${calculateTotal().toLocaleString()}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p className="text-xs text-gray-400 font-medium">
-                                    {totalDozens % 1 === 0 ? totalDozens : totalDozens.toFixed(1).replace('.', ',')} Docenas en total
-                                </p>
-                                <p className="text-xl font-bold tracking-tight">${calculateTotal().toLocaleString()}</p>
+                            <div className="flex items-center gap-1 font-bold text-orange-400">
+                                Finalizar <ChevronRight size={18} />
                             </div>
-                        </div>
-                        <div className="flex items-center gap-1 font-bold text-orange-400">
-                            Finalizar <ChevronRight size={18} />
                         </div>
                     </div>
                 </div>
