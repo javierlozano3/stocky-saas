@@ -58,6 +58,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
 
     // Edit Order Modal State
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [editingOrder, setEditingOrder] = useState<Order | null>(null);
     const [editReason, setEditReason] = useState('');
     const [varietyToAdd, setVarietyToAdd] = useState<string>('');
@@ -1052,7 +1053,9 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                     <label className="block text-sm font-bold text-gray-700 mb-4">Logo del Negocio</label>
                                     <div className="flex items-center gap-6">
                                         <div className="w-24 h-24 bg-white rounded-xl border border-gray-200 shadow-sm flex items-center justify-center overflow-hidden relative group">
-                                            {businessConfig.logoUrl ? (
+                                            {logoFile ? (
+                                                <img src={URL.createObjectURL(logoFile)} alt="Preview" className="w-full h-full object-contain p-2" />
+                                            ) : businessConfig.logoUrl ? (
                                                 <img src={businessConfig.logoUrl} alt="Logo" className="w-full h-full object-contain p-2" />
                                             ) : (
                                                 <span className="text-xs text-gray-300 font-bold uppercase">Sin Logo</span>
@@ -1109,16 +1112,21 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                         <div className="flex justify-end pt-4 border-t border-gray-100">
                             <Button
                                 onClick={async () => {
+                                    setIsSaving(true);
                                     try {
                                         let finalLogoUrl = businessConfig.logoUrl;
 
                                         // 1. Upload Logo if selected
                                         if (logoFile) {
-                                            if (logoFile.size > 2 * 1024 * 1024) {
-                                                alert("El archivo es demasiado grande (Max 2MB)");
+                                            if (logoFile.size > 5 * 1024 * 1024) {
+                                                alert("El archivo es demasiado grande (Max 5MB)");
+                                                setIsSaving(false);
                                                 return;
                                             }
-                                            const storageRef = ref(storage, `logos/${negocioId}/${Date.now()}_${logoFile.name}`);
+
+                                            // Create a unique file name
+                                            const fileName = `logos/${negocioId}/${Date.now()}_${logoFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                                            const storageRef = ref(storage, fileName);
                                             const uploadTask = uploadBytesResumable(storageRef, logoFile);
 
                                             uploadTask.on('state_changed',
@@ -1129,13 +1137,14 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                                 (error) => {
                                                     console.error("Upload error:", error);
                                                     alert("Error subiendo imagen: " + error.message);
+                                                    setIsSaving(false);
                                                 }
                                             );
 
-                                            // Esperamos a que termine la subida
+                                            // Wait for upload to complete
                                             await uploadTask;
 
-                                            // Obtenemos la URL final
+                                            // Get the URL
                                             finalLogoUrl = await getDownloadURL(storageRef);
                                             console.log("Logo uploaded successfully:", finalLogoUrl);
                                         }
@@ -1157,11 +1166,22 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                     } catch (error) {
                                         console.error("Error updating config:", error);
                                         alert("Hubo un error al guardar. Revisa la consola.");
+                                    } finally {
+                                        setIsSaving(false);
                                     }
                                 }}
-                                className="bg-gray-900 hover:bg-black text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-gray-200 transition-all hover:scale-[1.02]"
+                                className="bg-gray-900 hover:bg-black text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-gray-200 transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <Save size={18} className="mr-2" /> Guardar Cambios
+                                {isSaving ? (
+                                    <>
+                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                        Guardando...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save size={18} className="mr-2" /> Guardar Cambios
+                                    </>
+                                )}
                             </Button>
                         </div>
                     </div>
