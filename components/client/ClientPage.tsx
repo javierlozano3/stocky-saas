@@ -13,7 +13,7 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import { addDoc, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 
 // Updated MenuRow to support dynamic pricing display
-const MenuRow = ({ variety, onAdd, qtyInCart }: { variety: Variety, onAdd: (qty: number) => void, qtyInCart: number }) => {
+const MenuRow = ({ variety, onAdd, qtyInCart, businessConfig }: { variety: Variety, onAdd: (qty: number) => void, qtyInCart: number, businessConfig: any }) => {
     return (
         <div className={`p-4 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-orange-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all hover:shadow-md ${!variety.disponible || variety.stock <= 0 ? 'opacity-60 grayscale' : ''}`}>
 
@@ -31,7 +31,7 @@ const MenuRow = ({ variety, onAdd, qtyInCart }: { variety: Variety, onAdd: (qty:
                 <button
                     onClick={() => onAdd(0.5)}
                     className="flex-1 sm:flex-none px-4 py-2 bg-text-orange-700 bg-orange-50 hover:bg-orange-100 text-orange-700 text-sm font-bold rounded-lg transition-colors active:scale-95 border border-orange-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={!variety.disponible || (qtyInCart + 0.5 > variety.stock)}
+                    disabled={!variety.disponible || (qtyInCart + 0.5 > variety.stock) || !businessConfig.abierto}
                 >
                     + ½ Doc
                 </button>
@@ -39,7 +39,7 @@ const MenuRow = ({ variety, onAdd, qtyInCart }: { variety: Variety, onAdd: (qty:
                 <button
                     onClick={() => onAdd(1.0)}
                     className="flex-1 sm:flex-none px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-sm shadow-red-200 transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                    disabled={!variety.disponible || (qtyInCart + 1.0 > variety.stock)}
+                    disabled={!variety.disponible || (qtyInCart + 1.0 > variety.stock) || !businessConfig.abierto}
                 >
                     + 1 Doc
                 </button>
@@ -242,6 +242,12 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                 <p className="text-gray-500 font-medium mt-1">{businessConfig.subtitulo || "Fábrica de Empanadas"}</p>
             </header>
 
+            {!businessConfig.abierto && (
+                <div className="bg-red-600 text-white text-center py-3 px-4 font-bold animate-pulse shadow-md mb-6 mx-4 rounded-xl">
+                    🔴 LOCAL CERRADO - No estamos tomando pedidos por el momento.
+                </div>
+            )}
+
             {/* Menu List */}
             <main className="max-w-2xl mx-auto p-4 pt-6 space-y-8">
                 {categories.length > 0 ? (
@@ -263,6 +269,7 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                                         variety={variety}
                                         onAdd={(qty) => addToCart(variety, qty)}
                                         qtyInCart={cart.find(item => item.id === variety.id)?.cantidad || 0}
+                                        businessConfig={businessConfig}
                                     />
                                 ))}
                             </div>
