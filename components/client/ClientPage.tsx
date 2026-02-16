@@ -13,14 +13,14 @@ import { collection, onSnapshot } from 'firebase/firestore';
 import { addDoc, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 
 // Updated MenuRow to support dynamic pricing display
-const MenuRow = ({ variety, onAdd }: { variety: Variety, onAdd: (qty: number) => void }) => {
+const MenuRow = ({ variety, onAdd, qtyInCart }: { variety: Variety, onAdd: (qty: number) => void, qtyInCart: number }) => {
     return (
         <div className={`p-4 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-orange-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all hover:shadow-md ${!variety.disponible || variety.stock <= 0 ? 'opacity-60 grayscale' : ''}`}>
 
             <div className="flex-1">
                 <div className="flex items-center gap-2">
                     <h3 className="text-lg font-bold text-gray-800">{variety.nombre}</h3>
-                    {variety.stock <= 2 && variety.disponible && <span className="text-[10px] font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded-full uppercase tracking-wider">Poco Stock</span>}
+                    {variety.stock <= 2 && variety.disponible && <span className="text-[10px] font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded-full uppercase tracking-wider">Poco Stock: {variety.stock.toFixed(1)}</span>}
                 </div>
                 <p className="text-sm text-gray-500 font-medium">
                     <span className="text-gray-900 font-bold">${variety.precioMedia}</span> (½ Doc) • <span className="text-gray-900 font-bold">${variety.precio}</span> (1 Doc)
@@ -30,16 +30,16 @@ const MenuRow = ({ variety, onAdd }: { variety: Variety, onAdd: (qty: number) =>
             <div className="flex items-center gap-2 w-full sm:w-auto">
                 <button
                     onClick={() => onAdd(0.5)}
-                    className="flex-1 sm:flex-none px-4 py-2 bg-orange-50 hover:bg-orange-100 text-orange-700 text-sm font-bold rounded-lg transition-colors active:scale-95 border border-orange-200"
-                    disabled={!variety.disponible || variety.stock <= 0}
+                    className="flex-1 sm:flex-none px-4 py-2 bg-text-orange-700 bg-orange-50 hover:bg-orange-100 text-orange-700 text-sm font-bold rounded-lg transition-colors active:scale-95 border border-orange-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!variety.disponible || (qtyInCart + 0.5 > variety.stock)}
                 >
                     + ½ Doc
                 </button>
 
                 <button
                     onClick={() => onAdd(1.0)}
-                    className="flex-1 sm:flex-none px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-sm shadow-red-200 transition-colors active:scale-95"
-                    disabled={!variety.disponible || variety.stock < 1}
+                    className="flex-1 sm:flex-none px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-sm shadow-red-200 transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!variety.disponible || (qtyInCart + 1.0 > variety.stock)}
                 >
                     + 1 Doc
                 </button>
@@ -47,6 +47,7 @@ const MenuRow = ({ variety, onAdd }: { variety: Variety, onAdd: (qty: number) =>
         </div>
     );
 };
+
 
 export const ClientPage = ({ negocioId }: { negocioId: string }) => {
     const [variedades, setVariedades] = useState<Variety[]>([]);
@@ -105,12 +106,14 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
         setCart(prev => {
             const existing = prev.find(item => item.id === variety.id);
             if (existing) {
+                if (existing.cantidad + qtyAddedInDozens > variety.stock) return prev;
                 return prev.map(item =>
                     item.id === variety.id
-                        ? { ...item, cantidad: item.cantidad + qtyAddedInDozens } // Cambiado a cantidad
+                        ? { ...item, cantidad: item.cantidad + qtyAddedInDozens }
                         : item
                 );
             }
+            if (qtyAddedInDozens > variety.stock) return prev;
             return [...prev, {
                 id: variety.id,
                 nombre: variety.nombre,
@@ -259,6 +262,7 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                                         key={variety.id}
                                         variety={variety}
                                         onAdd={(qty) => addToCart(variety, qty)}
+                                        qtyInCart={cart.find(item => item.id === variety.id)?.cantidad || 0}
                                     />
                                 ))}
                             </div>
