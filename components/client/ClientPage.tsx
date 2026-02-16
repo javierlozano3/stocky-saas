@@ -2,12 +2,13 @@
 "use client";
 
 import React, { useState, useEffect } from 'react'; // Agregamos useEffect
-import { CartItem, Variety } from '@/types'; 
-import { ShoppingBag, ChevronRight, CheckCircle, Loader2 } from 'lucide-react'; // Loader para el estado de carga
+import { CartItem, Variety } from '@/types';
+import { ShoppingBag, ChevronRight, CheckCircle, Loader2, LayoutDashboard } from 'lucide-react'; // Loader para el estado de carga
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
+import Link from 'next/link';
 
-import { db } from '@/lib/firebase'; 
+import { db } from '@/lib/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { addDoc, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 
@@ -56,7 +57,14 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
     const [customerPhone, setCustomerPhone] = useState('');
     const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
     const [lastOrderCode, setLastOrderCode] = useState('');
-    const [businessConfig, setBusinessConfig] = useState({ whatsapp: '', logoUrl: '', abierto: true });
+
+    const [businessConfig, setBusinessConfig] = useState({
+        whatsapp: '',
+        logoUrl: '',
+        abierto: true,
+        nombre: '',
+        subtitulo: ''
+    });
 
     useEffect(() => {
         // Referencia a: empresas > [negocioId] > productos
@@ -67,7 +75,9 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                 setBusinessConfig({
                     whatsapp: data.whatsapp || '',
                     logoUrl: data.logoUrl || '',
-                    abierto: data.abierto ?? true
+                    abierto: data.abierto ?? true,
+                    nombre: data.nombre || '',
+                    subtitulo: data.subtitulo || ''
                 });
             }
         });
@@ -81,7 +91,7 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                     precioMedia: data.precioMedia || (data.precio / 2) + 500,
                     stock: data.stock || 0,
                     disponible: (data.stock || 0) > 0 && data.disponible === true,
-                    categoria: data.categoria || 'Clásicas' 
+                    categoria: data.categoria || 'Clásicas'
                 } as Variety;
             });
             setVariedades(lista);
@@ -92,23 +102,23 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
     }, [negocioId]);
 
     const addToCart = (variety: Variety, qtyAddedInDozens: number) => {
-    setCart(prev => {
-        const existing = prev.find(item => item.id === variety.id);
-        if (existing) {
-            return prev.map(item =>
-                item.id === variety.id
-                    ? { ...item, cantidad: item.cantidad + qtyAddedInDozens } // Cambiado a cantidad
-                    : item
-            );
-        }
-        return [...prev, {
-            id: variety.id,      
-            nombre: variety.nombre, 
-            cantidad: qtyAddedInDozens, 
-            precio: variety.precio,     
-            precioMedia: variety.precioMedia 
-        }];
-    });
+        setCart(prev => {
+            const existing = prev.find(item => item.id === variety.id);
+            if (existing) {
+                return prev.map(item =>
+                    item.id === variety.id
+                        ? { ...item, cantidad: item.cantidad + qtyAddedInDozens } // Cambiado a cantidad
+                        : item
+                );
+            }
+            return [...prev, {
+                id: variety.id,
+                nombre: variety.nombre,
+                cantidad: qtyAddedInDozens,
+                precio: variety.precio,
+                precioMedia: variety.precioMedia
+            }];
+        });
     };
 
     const totalDozens = cart.reduce((acc, item) => acc + item.cantidad, 0);
@@ -125,10 +135,9 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
     };
 
     const generateShortCode = () => {
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const randomLetters = letters[Math.floor(Math.random() * letters.length)] + 
-                         letters[Math.floor(Math.random() * letters.length)];
-    const randomNumbers = Math.floor(100 + Math.random() * 900); 
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const randomLetters = letters[Math.floor(Math.random() * letters.length)] + letters[Math.floor(Math.random() * letters.length)];
+        const randomNumbers = Math.floor(100 + Math.random() * 900);
         return `${randomLetters}-${randomNumbers}`;
     };
 
@@ -191,7 +200,7 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
     // Agrupamos las variedades por categoría
     const varietiesByCategory = variedades.reduce((acc, variety) => {
         // Ahora 'variety.categoria' ya vendrá con el dato real de Firebase
-        const category = variety.categoria || 'Clásicas'; 
+        const category = variety.categoria || 'Clásicas';
         if (!acc[category]) {
             acc[category] = [];
         }
@@ -201,18 +210,22 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
 
     // Ordenar las categorías para que siempre aparezcan en el mismo orden
     const categories = Object.keys(varietiesByCategory).sort((a, b) => {
-        const order: Record<string, number> = { 'Clásicas': 1, 'Gourmet': 2, 'Vegetarianas': 3, 'Especiales': 4};
+        const order: Record<string, number> = { 'Clásicas': 1, 'Gourmet': 2, 'Vegetarianas': 3, 'Especiales': 4 };
         return (order[a] || 99) - (order[b] || 99);
     });
 
     return (
         <div className="min-h-screen pb-24 bg-orange-50/30 font-sans">
             {/* Header */}
-            <header className="text-center py-8">
+            <header className="text-center py-8 relative">
+                <Link href="/" className="absolute top-4 left-4 flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
+                    <LayoutDashboard className="text-red-600" size={20} />
+                    <span className="font-bold text-xl tracking-tight text-gray-900">Stocky<span className="text-red-600">.</span></span>
+                </Link>
                 {businessConfig.logoUrl ? (
-                    <img 
-                        src={businessConfig.logoUrl} 
-                        alt="Logo del negocio" 
+                    <img
+                        src={businessConfig.logoUrl}
+                        alt="Logo del negocio"
                         className="mx-auto h-20 w-auto mb-4 object-contain"
                     />
                 ) : (
@@ -221,9 +234,9 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                     </div>
                 )}
                 <h1 className="text-3xl font-black text-gray-900 capitalize tracking-tight">
-                    {negocioId.replace('-', ' ')}
+                    {businessConfig.nombre || negocioId.replace('-', ' ')}
                 </h1>
-                <p className="text-gray-500 font-medium mt-1">Fábrica de Empanadas</p>
+                <p className="text-gray-500 font-medium mt-1">{businessConfig.subtitulo || "Fábrica de Empanadas"}</p>
             </header>
 
             {/* Menu List */}
@@ -257,6 +270,11 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                     </div>
                 )}
             </main>
+
+            {/* Footer */}
+            <footer className="text-center py-8 pb-32 text-gray-400 text-xs font-medium">
+                <p>© 2026 Powered by <a href="https://vynex.ar" target="_blank" rel="noopener noreferrer" className="font-bold text-gray-500 hover:text-red-500 transition-colors">VYNEX</a></p>
+            </footer>
 
             {/* Floating Cart */}
             {cart.length > 0 && (
@@ -343,8 +361,8 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
             </Modal>
 
             {/* Confirm Modal */}
-            <Modal 
-                isOpen={isSuccessModalOpen} 
+            <Modal
+                isOpen={isSuccessModalOpen}
                 onClose={() => setIsSuccessModalOpen(false)}
                 title="¡Pedido Confirmado!"
             >
@@ -352,18 +370,18 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                     <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <CheckCircle size={40} className="text-green-600" />
                     </div>
-                    
+
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">¡Pedido tomado!</h2>
                     <p className="text-gray-600 mb-4">
                         Tu código de pedido es: <span className="font-mono font-bold text-red-600">{lastOrderCode}</span>
                     </p>
-                    
+
                     <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6 text-sm text-blue-800 text-left">
                         <strong>⚠️ Paso importante:</strong> Envianos el detalle por WhatsApp. <p>Los pedidos se retiran y se pagan en el local</p>
                     </div>
 
-                    <Button 
-                        fullWidth 
+                    <Button
+                        fullWidth
                         onClick={() => {
                             // Aquí movemos la lógica de generar el link de WhatsApp
                             const total = calculateTotal();
@@ -374,10 +392,10 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                                 msg += `- ${item.cantidad} x ${item.nombre}\n`;
                             });
                             msg += `\n*Total: $${total}*`;
-                            
+
                             const whatsappUrl = `https://wa.me/${businessConfig.whatsapp}?text=${encodeURIComponent(msg)}`;
                             window.open(whatsappUrl, '_blank');
-                            
+
                             // Limpiar carrito y cerrar
                             setCart([]);
                             setIsSuccessModalOpen(false);
