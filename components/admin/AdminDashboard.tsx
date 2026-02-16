@@ -1121,19 +1121,23 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                             const storageRef = ref(storage, `logos/${negocioId}/${Date.now()}_${logoFile.name}`);
                                             const uploadTask = uploadBytesResumable(storageRef, logoFile);
 
-                                            await new Promise<void>((resolve, reject) => {
-                                                uploadTask.on('state_changed',
-                                                    (snapshot) => {
-                                                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                                        setUploadProgress(progress);
-                                                    },
-                                                    (error) => reject(error),
-                                                    async () => {
-                                                        finalLogoUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                                                        resolve();
-                                                    }
-                                                );
-                                            });
+                                            uploadTask.on('state_changed',
+                                                (snapshot) => {
+                                                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                                    setUploadProgress(progress);
+                                                },
+                                                (error) => {
+                                                    console.error("Upload error:", error);
+                                                    alert("Error subiendo imagen: " + error.message);
+                                                }
+                                            );
+
+                                            // Esperamos a que termine la subida
+                                            await uploadTask;
+
+                                            // Obtenemos la URL final
+                                            finalLogoUrl = await getDownloadURL(storageRef);
+                                            console.log("Logo uploaded successfully:", finalLogoUrl);
                                         }
 
                                         // 2. Update Firestore
