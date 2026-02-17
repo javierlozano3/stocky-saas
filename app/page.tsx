@@ -1,23 +1,61 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui/Modal';
+import { LeadCaptureModal } from '@/components/marketing/LeadCaptureModal';
 import { Smartphone, LayoutDashboard, ArrowRight, CheckCircle } from 'lucide-react';
 
 export default function Home() {
+  const router = useRouter();
   const [isClientModalOpen, setIsClientModalOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
+  const [hasLeadCaptured, setHasLeadCaptured] = useState(false);
+
+  useEffect(() => {
+    // Check if lead was captured previously
+    if (typeof window !== 'undefined') {
+      const captured = localStorage.getItem('stocky_lead_captured');
+      if (captured === 'true') {
+        setHasLeadCaptured(true);
+      }
+    }
+  }, []);
+
+  const handleDemoAccess = () => {
+    if (hasLeadCaptured) {
+      router.push('/demo');
+    } else {
+      // Close other modals if open
+      setIsClientModalOpen(false);
+      setIsAdminModalOpen(false);
+      // Open Lead Modal
+      setIsLeadModalOpen(true);
+    }
+  };
+
+  const handleLeadSuccess = () => {
+    setIsLeadModalOpen(false);
+    setHasLeadCaptured(true);
+    router.push('/demo');
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans selection:bg-red-500 selection:text-white">
       {/* Nav */}
       <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto z-20 relative">
         <div className="font-bold text-2xl tracking-tighter">Stocky<span className="text-red-500">.</span></div>
-        <div className="space-x-4 text-sm font-medium text-gray-400">
+        <div className="space-x-4 text-sm font-medium text-gray-400 flex items-center">
           <a href="#features" className="hover:text-white transition-colors">Características</a>
           <a href="#pricing" className="hover:text-white transition-colors">Precios</a>
-          <Link href="/demo" className="text-white hover:text-red-400">Ver Demo</Link>
+          <button
+            onClick={handleDemoAccess}
+            className="text-white hover:text-red-400 font-medium transition-colors"
+          >
+            Ver Demo
+          </button>
         </div>
       </nav>
 
@@ -125,6 +163,12 @@ export default function Home() {
 
       {/* --- MODALS --- */}
 
+      <LeadCaptureModal
+        isOpen={isLeadModalOpen}
+        onClose={() => setIsLeadModalOpen(false)}
+        onSuccess={handleLeadSuccess}
+      />
+
       {/* Modal Cliente */}
       <Modal isOpen={isClientModalOpen} onClose={() => setIsClientModalOpen(false)} title="Experiencia para tus Clientes">
         <div className="text-gray-900">
@@ -145,13 +189,12 @@ export default function Home() {
               <CheckCircle size={16} className="text-green-500" /> Carga instantánea con QR
             </li>
           </ul>
-          <Link
-            href="/demo"
-            onClick={() => setIsClientModalOpen(false)}
+          <button
+            onClick={handleDemoAccess}
             className="w-full flex items-center justify-center gap-2 bg-red-600 text-white font-bold py-3 rounded-xl hover:bg-red-700 transition-colors"
           >
             Ver Tour Guiado <ArrowRight size={18} />
-          </Link>
+          </button>
           <p className="text-center mt-3 text-xs text-gray-400">
             Podrás probar la app interactiva en el siguiente paso.
           </p>
@@ -178,13 +221,12 @@ export default function Home() {
               <CheckCircle size={16} className="text-green-500" /> Recepción de pedidos en tiempo real
             </li>
           </ul>
-          <Link
-            href="/demo"
-            onClick={() => setIsAdminModalOpen(false)}
+          <button
+            onClick={handleDemoAccess}
             className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white font-bold py-3 rounded-xl hover:bg-gray-800 transition-colors"
           >
             Ver Tour Guiado <ArrowRight size={18} />
-          </Link>
+          </button>
         </div>
       </Modal>
     </div>

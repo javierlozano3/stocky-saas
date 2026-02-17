@@ -70,7 +70,7 @@ export default function DemoPage() {
                             </li>
                         </ul>
                         <Link
-                            href="/empresa01"
+                            href="/empresademo"
                             className="inline-flex items-center gap-2 bg-white text-gray-900 hover:bg-gray-100 px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 shadow-lg shadow-white/10"
                         >
                             <Smartphone size={20} /> Probar como Cliente Real
@@ -211,7 +211,7 @@ export default function DemoPage() {
                             </li>
                         </ul>
                         <Link
-                            href="/empresa01/admin"
+                            href="/empresademo/admin"
                             className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 shadow-lg shadow-blue-500/30"
                         >
                             <LayoutDashboard size={20} /> Probar Panel Admin
