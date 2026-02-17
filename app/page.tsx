@@ -66,12 +66,12 @@ export default function Home() {
         <div
           className={`fixed inset-0 z-[100] bg-gray-900 flex flex-col items-center justify-center transition-all duration-700 ease-in-out ${introFading ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}
         >
-          <div className="flex flex-col items-center gap-4 animate-pulse">
+          <div className="flex flex-row items-center gap-6 animate-pulse">
             <div className="relative w-32 h-32 flex items-center justify-center">
               {/* Animated Squares Simulation with CSS classes if possible, for now just SVG scaled up */}
               <StockyLogo className="w-32 h-32 text-red-600 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" />
             </div>
-            <h1 className="text-6xl font-black tracking-tighter text-white drop-shadow-md">
+            <h1 className="text-6xl font-black tracking-tighter text-white drop-shadow-md pt-4">
               Stocky<span className="text-red-600">.</span>
             </h1>
           </div>
