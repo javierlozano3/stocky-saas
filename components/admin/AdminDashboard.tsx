@@ -398,27 +398,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
     };
 
 
-    useEffect(() => {
-        if (!negocioId) return;
-        const q = query(
-            collection(db, 'empresas', negocioId, 'pedidos'),
-            orderBy('createdAt', 'desc')
-        );
 
-        const unsubscribe = onSnapshot(q, (snapshot) => {
-            const pedidosFirebase = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            })) as unknown as OrderWithTimestamp[];
-            setOrders(pedidosFirebase);
-        });
-
-        return () => unsubscribe();
-    }, [negocioId]);
-
-    if (!isAuthenticated) {
-        return <AdminLogin onLogin={() => setIsAuthenticated(true)} empresaId={negocioId} />;
-    }
 
     const generateExcelReport = () => {
         // 1. Filtramos solo los pedidos pagados
@@ -657,7 +637,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                             <p className="font-bold text-gray-900 truncate text-sm">{businessConfig.nombre || negocioId}</p>
                         </div>
                     </div>
-                    <button onClick={() => setIsAuthenticated(false)} className="text-xs text-red-500 mt-3 font-medium hover:underline w-full text-left px-4">Cerrar Sesión</button>
+                    <button onClick={() => setUser(null)} className="text-xs text-red-500 mt-3 font-medium hover:underline w-full text-left px-4">Cerrar Sesión</button>
                 </div>
             </aside>
 
