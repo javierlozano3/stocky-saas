@@ -815,7 +815,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                                 <th className="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider">Detalle del Pedido</th>
                                                 <th className="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider text-right">Total</th>
                                                 <th className="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Estado</th>
-                                                {orderSubTab === 'cancelled' && <th className="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Acciones</th>}
+                                                {(orderSubTab === 'cancelled' || orderSubTab === 'paid') && <th className="p-5 text-xs font-bold text-gray-500 uppercase tracking-wider text-center">Acciones</th>}
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-100">
@@ -880,14 +880,17 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                                                 {order.estado.replace('PAGADO ', '')}
                                                             </span>
                                                         </td>
-                                                        {orderSubTab === 'cancelled' && (
+                                                        {(orderSubTab === 'cancelled' || orderSubTab === 'paid') && (
                                                             <td className="p-5 text-center">
                                                                 <button
                                                                     onClick={() => handleStatusChange(order.id, 'Pendiente')}
-                                                                    className="p-2 text-green-600 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-all shadow-sm active:scale-95"
-                                                                    title="Reactivar Pedido"
+                                                                    className="p-2 text-green-600 bg-green-50 hover:bg-green-100 border border-green-200 rounded-lg transition-all shadow-sm active:scale-95 group/btn relative"
+                                                                    title="Volver a Pendientes"
                                                                 >
                                                                     <Plus size={18} />
+                                                                    <span className="hidden group-hover/btn:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-bold text-white bg-gray-900 rounded whitespace-nowrap">
+                                                                        Restaurar
+                                                                    </span>
                                                                 </button>
                                                             </td>
                                                         )}
