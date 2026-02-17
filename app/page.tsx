@@ -208,10 +208,10 @@ export default function Home() {
           <div className="bg-gray-800 p-8 rounded-3xl border border-gray-700 hover:border-gray-500 transition-colors">
             <h3 className="text-xl font-bold text-gray-400 mb-2">Plan Emprendedor</h3>
             <div className="flex items-baseline gap-1 mb-1">
-              <span className="text-5xl font-bold text-white">$20</span>
+              <span className="text-5xl font-bold text-white">USD 20</span>
               <span className="text-lg text-gray-400">/mes</span>
             </div>
-            <div className="text-sm text-gray-500 mb-6 font-medium">+ $35 USD Setup Inicial</div>
+            <div className="text-sm text-gray-500 mb-6 font-medium">+ USD 35 Setup Inicial</div>
 
             <ul className="space-y-4 mb-8 text-gray-300 text-sm">
               <li className="flex gap-3 items-center"><span className="text-green-400">✓</span> Menú QR dinámico</li>
@@ -229,10 +229,10 @@ export default function Home() {
             <div className="absolute top-0 right-0 bg-red-600 px-4 py-1 rounded-bl-xl rounded-tr-2xl text-xs font-bold text-white uppercase tracking-wider">Recomendado</div>
             <h3 className="text-xl font-bold text-red-400 mb-2">Plan Business</h3>
             <div className="flex items-baseline gap-1 mb-1">
-              <span className="text-5xl font-bold text-white">$30</span>
+              <span className="text-5xl font-bold text-white">USD 30</span>
               <span className="text-lg text-gray-400">/mes</span>
             </div>
-            <div className="text-sm text-gray-500 mb-6 font-medium">+ $55 USD Setup Inicial</div>
+            <div className="text-sm text-gray-500 mb-6 font-medium">+ USD 55 Setup Inicial</div>
 
             <ul className="space-y-4 mb-8 text-gray-200 text-sm font-medium">
               <li className="flex gap-3 items-center"><span className="text-red-500">✓</span> Todo lo del Plan Emprendedor</li>
