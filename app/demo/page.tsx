@@ -58,7 +58,7 @@ export default function DemoPage() {
                         <ul className="space-y-4 mb-8 text-gray-400 text-lg">
                             <li className="flex gap-4 items-start">
                                 <CheckCircle className="text-red-500 shrink-0 mt-1" size={20} />
-                                <span>Tus clientes eligen sus empanadas o pizzas favoritas visualmente. 1/2 docenas y docenas se calculan solas.</span>
+                                <span>Tus clientes eligen sus empanadas o pizzas favoritas visualmente. 1, 2, 1/2 docenas y docenas se calculan solas.</span>
                             </li>
                             <li className="flex gap-4 items-start">
                                 <CheckCircle className="text-red-500 shrink-0 mt-1" size={20} />
@@ -73,7 +73,7 @@ export default function DemoPage() {
                             href="/empresademo"
                             className="inline-flex items-center gap-2 bg-white text-gray-900 hover:bg-gray-100 px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 shadow-lg shadow-white/10"
                         >
-                            <Smartphone size={20} /> Probar como Cliente Real
+                            <Smartphone size={20} /> Probar como Cliente Demo
                         </Link>
                     </div>
 
@@ -159,7 +159,7 @@ export default function DemoPage() {
                             <div className="flex justify-between items-start">
                                 <div>
                                     <span className="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full uppercase">Nuevo Pedido</span>
-                                    <h4 className="font-bold text-gray-900 mt-2 text-lg">Mesa 4 / Juan Perez</h4>
+                                    <h4 className="font-bold text-gray-900 mt-2 text-lg">Juan Perez</h4>
                                     <p className="text-sm text-gray-500">3x Carne Suave, 2x Jamón y Queso...</p>
                                 </div>
                                 <div className="text-right">
@@ -183,7 +183,7 @@ export default function DemoPage() {
                             <Bell size={20} />
                             <div>
                                 <div className="font-bold text-sm">¡Nuevo Pedido!</div>
-                                <div className="text-xs opacity-90">+$5.200 (MercadoPago)</div>
+                                <div className="text-xs opacity-90">+$5.200</div>
                             </div>
                         </div>
                     </div>
@@ -199,7 +199,7 @@ export default function DemoPage() {
                         <ul className="space-y-4 mb-8 text-gray-400 text-lg">
                             <li className="flex gap-4 items-start">
                                 <CheckCircle className="text-blue-500 shrink-0 mt-1" size={20} />
-                                <span>Recibe pedidos al instante con notificaciones sonoras.</span>
+                                <span>Recibe pedidos al instante con notificaciones por Whatsapp.</span>
                             </li>
                             <li className="flex gap-4 items-start">
                                 <CheckCircle className="text-blue-500 shrink-0 mt-1" size={20} />
@@ -214,7 +214,7 @@ export default function DemoPage() {
                             href="/empresademo/admin"
                             className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 shadow-lg shadow-blue-500/30"
                         >
-                            <LayoutDashboard size={20} /> Probar Panel Admin
+                            <LayoutDashboard size={20} /> Probar Panel Admin Demo
                         </Link>
                     </div>
                 </section>
@@ -226,7 +226,7 @@ export default function DemoPage() {
                         Deja de usar papel y lápiz. Pásate al sistema que usan los mejores.
                     </p>
                     <div className="flex flex-col md:flex-row justify-center gap-4">
-                        <a href="https://wa.me/54911..." target="_blank" className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-transform hover:scale-105">
+                        <a href="https://wa.me/5492646275291" target="_blank" className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-transform hover:scale-105">
                             Contactar Ventas
                         </a>
                         <Link href="/" className="bg-transparent border border-gray-600 hover:bg-gray-800 text-white px-8 py-4 rounded-full font-bold text-lg transition-colors">

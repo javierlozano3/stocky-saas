@@ -38,7 +38,8 @@ const MenuRow = ({ variety, onAdd, qtyInCart, businessConfig }: { variety: Varie
 
                 <button
                     onClick={() => onAdd(1.0)}
-                    className="flex-1 sm:flex-none px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg shadow-sm shadow-red-200 transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 sm:flex-none px-4 py-2 text-white text-sm font-bold rounded-lg shadow-sm transition-transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ backgroundColor: businessConfig.colorPrimario || '#DC2626' }}
                     disabled={!variety.disponible || (qtyInCart + 1.0 > variety.stock) || !businessConfig.abierto}
                 >
                     + 1 Doc
@@ -64,7 +65,8 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
         logoUrl: '',
         abierto: true,
         nombre: '',
-        subtitulo: ''
+        subtitulo: '',
+        colorPrimario: '#DC2626'
     });
 
     useEffect(() => {
@@ -78,7 +80,8 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                     logoUrl: data.logoUrl || '',
                     abierto: data.abierto ?? true,
                     nombre: data.nombre || '',
-                    subtitulo: data.subtitulo || ''
+                    subtitulo: data.subtitulo || '',
+                    colorPrimario: data.colorPrimario || '#DC2626'
                 });
             }
         });
@@ -232,7 +235,10 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                         className="mx-auto h-20 w-auto mb-4 object-contain"
                     />
                 ) : (
-                    <div className="w-16 h-16 bg-red-600 rounded-2xl mx-auto mb-4 flex items-center justify-center text-white text-2xl font-bold">
+                    <div
+                        className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center text-white text-2xl font-bold"
+                        style={{ backgroundColor: businessConfig.colorPrimario || '#DC2626' }}
+                    >
                         {negocioId.charAt(0).toUpperCase()}
                     </div>
                 )}
@@ -255,7 +261,10 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                         <section key={category} className="space-y-4">
                             {/* Título de la Categoría */}
                             <div className="flex items-center gap-3 px-2">
-                                <h2 className="text-xl font-extrabold text-gray-900 tracking-tight uppercase border-b-2 border-red-500 pb-1">
+                                <h2
+                                    className="text-xl font-extrabold text-gray-900 tracking-tight uppercase border-b-2 pb-1"
+                                    style={{ borderColor: businessConfig.colorPrimario || '#DC2626' }}
+                                >
                                     {category}
                                 </h2>
                                 <div className="h-px bg-gray-200 flex-1"></div>
@@ -351,7 +360,12 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
                         })}
                         <div className="flex justify-between items-center pt-2 text-lg font-bold border-t border-orange-200">
                             <span>Total a Pagar</span>
-                            <span className="text-red-600">${calculateTotal().toLocaleString()}</span>
+                            <span
+                                className="font-bold"
+                                style={{ color: businessConfig.colorPrimario || '#DC2626' }}
+                            >
+                                ${calculateTotal().toLocaleString()}
+                            </span>
                         </div>
                     </div>
                     <div className="space-y-4">
@@ -399,7 +413,7 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
 
                     <h2 className="text-2xl font-bold text-gray-800 mb-2">¡Pedido tomado!</h2>
                     <p className="text-gray-600 mb-4">
-                        Tu código de pedido es: <span className="font-mono font-bold text-red-600">{lastOrderCode}</span>
+                        Tu código de pedido es: <span className="font-mono font-bold" style={{ color: businessConfig.colorPrimario || '#DC2626' }}>{lastOrderCode}</span>
                     </p>
 
                     <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6 text-sm text-blue-800 text-left">

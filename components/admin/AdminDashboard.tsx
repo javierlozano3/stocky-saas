@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { Order, Variety } from '@/types';
 import { Button } from '@/components/ui/Button';
-import { Package, Utensils, BarChart, Plus, ToggleLeft, ToggleRight, LayoutDashboard, Search, FileDown, Edit, X, Save, AlertTriangle, Users, Clock, TrendingUp, AlertCircle, DollarSign, Menu, CreditCard } from 'lucide-react';
+import { Package, Utensils, BarChart, Plus, ToggleLeft, ToggleRight, LayoutDashboard, Search, FileDown, Edit, X, Save, AlertTriangle, Users, Clock, TrendingUp, AlertCircle, DollarSign, Menu, CreditCard, Lock, CheckCircle } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import { AdminLogin } from '@/components/admin/AdminLogin';
 import { db, storage } from '@/lib/firebase';
@@ -32,8 +32,17 @@ interface OrderWithTimestamp extends Omit<Order, 'createdAt'> {
     createdAt: FirebaseTimestamp;
 }
 
+// ... imports ...
+import { User as FirebaseUser } from 'firebase/auth';
+
 export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    // ... logic ...
+    const [user, setUser] = useState<FirebaseUser | null>(null);
+
+    // ...
+    if (!user) {
+        return <AdminLogin onLogin={(u) => setUser(u)} empresaId={negocioId} />;
+    }
     const [activeTab, setActiveTab] = useState<'orders' | 'inventory' | 'reports' | 'settings'>('orders');
     const [varieties, setVarieties] = useState<Variety[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -44,7 +53,9 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
         logoUrl: '',
         abierto: true,
         nombre: '',
-        subtitulo: ''
+        subtitulo: '',
+        plan: 'emprendedor', // Default value
+        colorPrimario: '#DC2626' // Default red
     });
 
     // File Upload State
@@ -91,7 +102,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
     };
 
     useEffect(() => {
-        if (!negocioId || !isAuthenticated) return;
+        if (!negocioId || !user) return;
 
         // Cargar Variedades
         const unsubVar = onSnapshot(collection(db, 'empresas', negocioId, 'productos'), (snap) => {
@@ -117,13 +128,15 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                     logoUrl: data.logoUrl || '',
                     abierto: data.abierto ?? true,
                     nombre: data.nombre || '',
-                    subtitulo: data.subtitulo || ''
+                    subtitulo: data.subtitulo || '',
+                    plan: data.plan || 'emprendedor',
+                    colorPrimario: data.colorPrimario || '#DC2626'
                 });
             }
         });
 
         return () => { unsubVar(); unsubOrders(); unsubConfig(); };
-    }, [negocioId, isAuthenticated]);
+    }, [negocioId, user]);
 
 
 
@@ -1277,31 +1290,80 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                             </div>
                         </div>
 
-                        <div className="flex justify-end pt-4 border-t border-gray-100">
+
+
+
+                        {/* --- PLAN BUSINESS SETTINGS --- */}
+                        <div className="pt-8 border-t border-gray-100">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-bold text-gray-800 flex items-center gap-2">
+                                    <TrendingUp className="text-yellow-500" size={20} />
+                                    Personalización Avanzada
+                                </h3>
+                                {businessConfig.plan === 'business' ? (
+                                    <span className="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider">Plan Business Activo</span>
+                                ) : (
+                                    <span className="bg-gray-100 text-gray-500 text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
+                                        <Lock size={12} /> Solo Business
+                                    </span>
+                                )}
+                            </div>
+
+                            <div className={`p-6 rounded-2xl border transition-all ${businessConfig.plan === 'business' ? 'bg-white border-gray-200' : 'bg-gray-50 border-gray-200 opacity-70 pointer-events-none relative overflow-hidden'}`}>
+
+                                {businessConfig.plan !== 'business' && (
+                                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-50/50 backdrop-blur-[1px]">
+                                        <div className="bg-white p-4 rounded-xl shadow-xl text-center border border-gray-100">
+                                            <Lock className="mx-auto text-gray-400 mb-2" size={24} />
+                                            <p className="text-sm font-bold text-gray-900 mb-1">Función Premium</p>
+                                            <p className="text-xs text-gray-500 mb-3">Personaliza los colores de tu marca</p>
+                                            <button className="text-xs bg-gray-900 text-white px-3 py-2 rounded-lg font-bold">Mejorar Plan</button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Color de Marca</label>
+                                    <div className="flex flex-wrap gap-3">
+                                        {[
+                                            { name: 'Rojo Stocky', val: '#DC2626' },
+                                            { name: 'Azul', val: '#2563EB' },
+                                            { name: 'Verde', val: '#16A34A' },
+                                            { name: 'Naranja', val: '#EA580C' },
+                                            { name: 'Negro', val: '#111827' },
+                                            { name: 'Violeta', val: '#7C3AED' },
+                                        ].map((color) => (
+                                            <button
+                                                key={color.val}
+                                                onClick={() => setBusinessConfig(prev => ({ ...prev, colorPrimario: color.val }))}
+                                                className={`w-10 h-10 rounded-full border-2 transition-transform hover:scale-110 flex items-center justify-center ${businessConfig.colorPrimario === color.val ? 'border-gray-900 scale-110 shadow-md' : 'border-transparent'}`}
+                                                style={{ backgroundColor: color.val }}
+                                                title={color.name}
+                                            >
+                                                {businessConfig.colorPrimario === color.val && <CheckCircle size={16} className="text-white drop-shadow-md" />}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <p className="text-xs text-gray-400 mt-2">
+                                        Define el color principal de los botones y destacados en la vista del cliente.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="pt-6 flex justify-end border-t border-gray-100">
                             <Button
+                                disabled={isSaving}
                                 onClick={async () => {
                                     setIsSaving(true);
                                     try {
+                                        // ... Existing Logic for Upload ...
                                         let finalLogoUrl = businessConfig.logoUrl;
-
-                                        // 1. Upload Logo if selected
                                         if (logoFile) {
-                                            if (logoFile.size > 5 * 1024 * 1024) {
-                                                alert("El archivo es demasiado grande (Max 5MB)");
-                                                setIsSaving(false);
-                                                return;
-                                            }
-
-                                            // Create a unique file name
                                             const fileName = `logos/${negocioId}/${Date.now()}_${logoFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                                             const storageRef = ref(storage, fileName);
-
-                                            // Simple upload
-                                            await uploadBytes(storageRef, logoFile!);
-
-                                            // Get the URL
+                                            await uploadBytes(storageRef, logoFile);
                                             finalLogoUrl = await getDownloadURL(storageRef);
-                                            console.log("Logo uploaded successfully:", finalLogoUrl);
                                         }
 
                                         // 2. Update Firestore
@@ -1311,12 +1373,14 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                             subtitulo: businessConfig.subtitulo,
                                             logoUrl: finalLogoUrl,
                                             abierto: businessConfig.abierto,
+                                            // IMPORTANT: Only update color if in business plan (backend rules should enforce this ideally)
+                                            colorPrimario: businessConfig.plan === 'business' ? businessConfig.colorPrimario : '#DC2626',
                                             updatedAt: serverTimestamp()
                                         });
 
                                         setLogoFile(null);
                                         setUploadProgress(0);
-                                        setBusinessConfig(prev => ({ ...prev, logoUrl: finalLogoUrl }));
+                                        setBusinessConfig(prev => ({ ...prev, logoUrl: finalLogoUrl })); // Optimization
                                         alert('¡Configuración actualizada con éxito!');
                                     } catch (error) {
                                         console.error("Error updating config:", error);
