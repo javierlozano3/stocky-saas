@@ -1,11 +1,18 @@
+"use client";
 
+import React, { useState } from 'react';
 import Link from 'next/link';
+import { Modal } from '@/components/ui/Modal';
+import { Smartphone, LayoutDashboard, ArrowRight, CheckCircle } from 'lucide-react';
 
 export default function Home() {
+  const [isClientModalOpen, setIsClientModalOpen] = useState(false);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans selection:bg-red-500 selection:text-white">
       {/* Nav */}
-      <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto">
+      <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto z-20 relative">
         <div className="font-bold text-2xl tracking-tighter">Stocky<span className="text-red-500">.</span></div>
         <div className="space-x-4 text-sm font-medium text-gray-400">
           <a href="#features" className="hover:text-white transition-colors">Características</a>
@@ -24,13 +31,19 @@ export default function Home() {
         <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
           La plataforma definitiva para gestionar casas de empanadas, pizzerías y negocios de comida rápida con alta rotación.
         </p>
-        <div className="flex justify-center gap-4">
-          <Link href="/empresa01" className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-transform hover:scale-105 shadow-lg shadow-red-500/30">
-            Probar Cliente
-          </Link>
-          <Link href="/empresa01/admin" className="bg-white/10 hover:bg-white/20 text-white border border-white/10 px-8 py-4 rounded-full font-bold text-lg transition-all backdrop-blur-sm">
-            Probar Admin
-          </Link>
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+          <button
+            onClick={() => setIsClientModalOpen(true)}
+            className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-full font-bold text-lg transition-transform hover:scale-105 shadow-lg shadow-red-500/30 flex items-center justify-center gap-2"
+          >
+            <Smartphone size={20} /> Probar Cliente
+          </button>
+          <button
+            onClick={() => setIsAdminModalOpen(true)}
+            className="bg-white/10 hover:bg-white/20 text-white border border-white/10 px-8 py-4 rounded-full font-bold text-lg transition-all backdrop-blur-sm flex items-center justify-center gap-2"
+          >
+            <LayoutDashboard size={20} /> Probar Admin
+          </button>
         </div>
       </header>
 
@@ -43,7 +56,7 @@ export default function Home() {
           />
           <FeatureCard
             title="Gestión por Docenas"
-            desc="Logic de venta específica para empanadas. ½ docenas, docenas enteras y promociones automáticas."
+            desc="Lógica de venta específica para empanadas. ½ docenas, docenas enteras y promociones automáticas."
           />
           <FeatureCard
             title="Alertas de Stock"
@@ -109,6 +122,71 @@ export default function Home() {
       <footer className="py-12 text-center text-gray-500 text-sm border-t border-gray-800">
         © 2026 Stocky SaaS. Built for <a href="https://vynex.ar" target="_blank" rel="noopener noreferrer" className="hover:text-red-500 transition-colors font-bold">VYNEX</a>.
       </footer>
+
+      {/* --- MODALS --- */}
+
+      {/* Modal Cliente */}
+      <Modal isOpen={isClientModalOpen} onClose={() => setIsClientModalOpen(false)} title="Experiencia para tus Clientes">
+        <div className="text-gray-900">
+          <div className="mb-6 bg-red-50 p-4 rounded-xl flex items-start gap-3">
+            <Smartphone className="text-red-600 shrink-0 mt-1" />
+            <p className="text-sm text-gray-700">
+              Así es como tus clientes verán tu menú. Una interfaz rápida, limpia y diseñada para que pidan más.
+            </p>
+          </div>
+          <ul className="space-y-3 mb-8">
+            <li className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <CheckCircle size={16} className="text-green-500" /> Sin descargar aplicaciones
+            </li>
+            <li className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <CheckCircle size={16} className="text-green-500" /> Cálculo automático de docenas
+            </li>
+            <li className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <CheckCircle size={16} className="text-green-500" /> Carga instantánea con QR
+            </li>
+          </ul>
+          <Link
+            href="/demo"
+            onClick={() => setIsClientModalOpen(false)}
+            className="w-full flex items-center justify-center gap-2 bg-red-600 text-white font-bold py-3 rounded-xl hover:bg-red-700 transition-colors"
+          >
+            Ver Tour Guiado <ArrowRight size={18} />
+          </Link>
+          <p className="text-center mt-3 text-xs text-gray-400">
+            Podrás probar la app interactiva en el siguiente paso.
+          </p>
+        </div>
+      </Modal>
+
+      {/* Modal Admin */}
+      <Modal isOpen={isAdminModalOpen} onClose={() => setIsAdminModalOpen(false)} title="Panel de Control Dueño">
+        <div className="text-gray-900">
+          <div className="mb-6 bg-blue-50 p-4 rounded-xl flex items-start gap-3">
+            <LayoutDashboard className="text-blue-600 shrink-0 mt-1" />
+            <p className="text-sm text-gray-700">
+              El centro de comando de tu negocio. Controla todo lo que pasa sin estar en el local.
+            </p>
+          </div>
+          <ul className="space-y-3 mb-8">
+            <li className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <CheckCircle size={16} className="text-green-500" /> Edición de stock y precios en vivo
+            </li>
+            <li className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <CheckCircle size={16} className="text-green-500" /> Reportes de caja y ventas
+            </li>
+            <li className="flex items-center gap-2 text-sm font-medium text-gray-700">
+              <CheckCircle size={16} className="text-green-500" /> Recepción de pedidos en tiempo real
+            </li>
+          </ul>
+          <Link
+            href="/demo"
+            onClick={() => setIsAdminModalOpen(false)}
+            className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white font-bold py-3 rounded-xl hover:bg-gray-800 transition-colors"
+          >
+            Ver Tour Guiado <ArrowRight size={18} />
+          </Link>
+        </div>
+      </Modal>
     </div>
   );
 }
