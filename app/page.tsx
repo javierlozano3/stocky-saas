@@ -134,7 +134,7 @@ export default function Home() {
       {/* Nav */}
       <nav className={`flex justify-between items-center p-6 max-w-7xl mx-auto z-50 relative transition-opacity duration-1000 ${showIntro ? 'opacity-0' : 'opacity-100'}`}>
         <div className="font-bold text-2xl tracking-tighter flex items-center gap-3 group cursor-pointer">
-          <div className="bg-gray-800 p-2 rounded-lg group-hover:bg-gray-700 transition-colors border border-gray-700">
+          <div className="p-2 rounded-lg group-hover:bg-gray-800 transition-colors border border-transparent group-hover:border-gray-700">
             <StockyLogo className="w-6 h-6" />
           </div>
           <span>Stocky<span className="text-red-600">.</span></span>

@@ -15,14 +15,16 @@ import {
     CreditCard,
     Menu
 } from 'lucide-react';
+import { StockyLogo } from '@/components/ui/StockyLogo';
 
 export default function DemoPage() {
     return (
         <div className="min-h-screen bg-gray-900 text-white font-sans overflow-x-hidden selection:bg-red-500 selection:text-white">
             <nav className="fixed top-0 w-full z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-800">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <Link href="/" className="font-bold text-2xl tracking-tighter hover:scale-105 transition-transform">
-                        Stocky<span className="text-red-500">.</span>
+                    <Link href="/" className="font-bold text-2xl tracking-tighter hover:scale-105 transition-transform flex items-center gap-2">
+                        <StockyLogo className="w-8 h-8 rounded-lg bg-red-600 p-1.5" />
+                        <span>Stocky<span className="text-red-500">.</span></span>
                     </Link>
                     <Link
                         href="/"
