@@ -238,7 +238,7 @@ export default function EmpresaDemoPage() {
                                     <span className="text-gray-600 block text-xs">{item.nombre}</span>
                                 </div>
                                 <span className="font-bold text-gray-900">
-                                    ${((Math.floor(item.cantidad) * item.precio) + (item.cantidad % 1 >= 0.4 ? item.precioMedia : 0)).toLocaleString()}
+                                    ${((Math.floor(item.cantidad) * (item.precio || 0)) + (item.cantidad % 1 >= 0.4 ? (item.precioMedia || 0) : 0)).toLocaleString()}
                                 </span>
                             </div>
                         ))}
