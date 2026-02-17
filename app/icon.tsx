@@ -16,18 +16,27 @@ export default function Icon() {
                     width: '100%',
                     height: '100%',
                     display: 'flex',
-                    flexWrap: 'wrap',
                     alignItems: 'center',
                     justifyContent: 'center',
                     background: 'transparent',
-                    gap: '2px', // gap between squares
-                    padding: '2px', // slight padding
+                    gap: '4px',
                 }}
             >
-                <div style={{ width: '13px', height: '13px', borderRadius: '3px', background: '#DC2626' }}></div>
-                <div style={{ width: '13px', height: '13px', borderRadius: '3px', background: '#DC2626' }}></div>
-                <div style={{ width: '13px', height: '13px', borderRadius: '3px', background: '#DC2626' }}></div>
-                <div style={{ width: '13px', height: '13px', borderRadius: '3px', background: '#DC2626' }}></div>
+                {/* Left Column */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', height: '28px', width: '10px' }}>
+                    {/* Top Left: Tall */}
+                    <div style={{ height: '16px', width: '100%', border: '3px solid #DC2626', borderRadius: '4px', background: 'transparent' }}></div>
+                    {/* Bottom Left: Short */}
+                    <div style={{ height: '8px', width: '100%', border: '3px solid #DC2626', borderRadius: '3px', background: 'transparent' }}></div>
+                </div>
+
+                {/* Right Column */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', height: '28px', width: '10px' }}>
+                    {/* Top Right: Short */}
+                    <div style={{ height: '8px', width: '100%', border: '3px solid #DC2626', borderRadius: '3px', background: 'transparent' }}></div>
+                    {/* Bottom Right: Tall */}
+                    <div style={{ height: '16px', width: '100%', border: '3px solid #DC2626', borderRadius: '4px', background: 'transparent' }}></div>
+                </div>
             </div>
         ),
         {
