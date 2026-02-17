@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui/Modal';
 import { LeadCaptureModal } from '@/components/marketing/LeadCaptureModal';
+import { StockyLogo } from '@/components/ui/StockyLogo';
 import { Smartphone, LayoutDashboard, ArrowRight, CheckCircle } from 'lucide-react';
 
 export default function Home() {
@@ -14,6 +15,10 @@ export default function Home() {
   const [isLeadModalOpen, setIsLeadModalOpen] = useState(false);
   const [hasLeadCaptured, setHasLeadCaptured] = useState(false);
 
+  // Animation State
+  const [showIntro, setShowIntro] = useState(true);
+  const [introFading, setIntroFading] = useState(false);
+
   useEffect(() => {
     // Check if lead was captured previously
     if (typeof window !== 'undefined') {
@@ -21,6 +26,17 @@ export default function Home() {
       if (captured === 'true') {
         setHasLeadCaptured(true);
       }
+
+      // Start Intro Animation Sequence
+      const timer1 = setTimeout(() => {
+        setIntroFading(true); // Start fade out
+      }, 1500); // Hold for 1.5s
+
+      const timer2 = setTimeout(() => {
+        setShowIntro(false); // Remove from DOM
+      }, 2200); // 1.5s + 0.7s transition
+
+      return () => { clearTimeout(timer1); clearTimeout(timer2); };
     }
   }, []);
 
@@ -43,10 +59,33 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white font-sans selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen bg-gray-900 text-white font-sans selection:bg-red-500 selection:text-white relative">
+
+      {/* --- INTRO ANIMATION OVERLAY --- */}
+      {showIntro && (
+        <div
+          className={`fixed inset-0 z-[100] bg-gray-900 flex flex-col items-center justify-center transition-all duration-700 ease-in-out ${introFading ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}
+        >
+          <div className="flex flex-col items-center gap-4 animate-pulse">
+            <div className="relative w-32 h-32 flex items-center justify-center">
+              {/* Animated Squares Simulation with CSS classes if possible, for now just SVG scaled up */}
+              <StockyLogo className="w-32 h-32 text-red-600 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" />
+            </div>
+            <h1 className="text-6xl font-black tracking-tighter text-white drop-shadow-md">
+              Stocky<span className="text-red-600">.</span>
+            </h1>
+          </div>
+        </div>
+      )}
+
       {/* Nav */}
-      <nav className="flex justify-between items-center p-6 max-w-7xl mx-auto z-20 relative">
-        <div className="font-bold text-2xl tracking-tighter">Stocky<span className="text-red-500">.</span></div>
+      <nav className={`flex justify-between items-center p-6 max-w-7xl mx-auto z-50 relative transition-opacity duration-1000 ${showIntro ? 'opacity-0' : 'opacity-100'}`}>
+        <div className="font-bold text-2xl tracking-tighter flex items-center gap-3 group cursor-pointer">
+          <div className="bg-gray-800 p-2 rounded-lg group-hover:bg-gray-700 transition-colors border border-gray-700">
+            <StockyLogo className="w-6 h-6" />
+          </div>
+          <span>Stocky<span className="text-red-600">.</span></span>
+        </div>
         <div className="space-x-4 text-sm font-medium text-gray-400 flex items-center">
           <a href="#features" className="hover:text-white transition-colors">Características</a>
           <a href="#pricing" className="hover:text-white transition-colors">Precios</a>
