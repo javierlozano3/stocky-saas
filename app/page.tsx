@@ -30,11 +30,11 @@ export default function Home() {
       // Start Intro Animation Sequence
       const timer1 = setTimeout(() => {
         setIntroFading(true); // Start fade out
-      }, 1500); // Hold for 1.5s
+      }, 3500); // 3.5s total animation
 
       const timer2 = setTimeout(() => {
         setShowIntro(false); // Remove from DOM
-      }, 2200); // 1.5s + 0.7s transition
+      }, 4200); // +0.7s transition
 
       return () => { clearTimeout(timer1); clearTimeout(timer2); };
     }
@@ -64,16 +64,69 @@ export default function Home() {
       {/* --- INTRO ANIMATION OVERLAY --- */}
       {showIntro && (
         <div
-          className={`fixed inset-0 z-[100] bg-gray-900 flex flex-col items-center justify-center transition-all duration-700 ease-in-out ${introFading ? 'opacity-0 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}
+          className={`fixed inset-0 z-[100] bg-gray-900 flex items-center justify-center transition-opacity duration-700 ease-in-out ${introFading ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
         >
-          <div className="flex flex-row items-center gap-6 animate-pulse">
-            <div className="relative w-32 h-32 flex items-center justify-center">
-              {/* Animated Squares Simulation with CSS classes if possible, for now just SVG scaled up */}
-              <StockyLogo className="w-32 h-32 text-red-600 drop-shadow-[0_0_15px_rgba(220,38,38,0.5)]" />
+          <div className="relative flex items-center justify-center h-32 w-auto">
+            <style jsx>{`
+                    @keyframes revealSquare {
+                        0% { opacity: 0; transform: translateY(20px) scale(0.8); }
+                        100% { opacity: 1; transform: translateY(0) scale(1); }
+                    }
+                    @keyframes slideLeft {
+                        0% { transform: translateX(0); }
+                        100% { transform: translateX(-90px); }
+                    }
+                     @keyframes revealText {
+                        0% { opacity: 0; transform: translateX(-20px); filter: blur(10px); }
+                        100% { opacity: 1; transform: translateX(0); filter: blur(0); }
+                    }
+                    @keyframes popDot {
+                        0% { transform: scale(0); opacity: 0; }
+                        50% { transform: scale(1.5); opacity: 1; background-color: white; box-shadow: 0 0 20px white; }
+                        100% { transform: scale(1); opacity: 1; background-color: #DC2626; box-shadow: none; }
+                    }
+
+                    .sq-1 { animation: revealSquare 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.2s; opacity: 0; }
+                    .sq-2 { animation: revealSquare 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.4s; opacity: 0; }
+                    .sq-3 { animation: revealSquare 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.6s; opacity: 0; }
+                    .sq-4 { animation: revealSquare 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.8s; opacity: 0; }
+                    
+                    .logo-container {
+                        animation: slideLeft 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards 1.4s;
+                    }
+
+                    .text-reveal {
+                        animation: revealText 0.8s ease-out forwards 1.6s;
+                        opacity: 0;
+                    }
+
+                    .dot-reveal {
+                        animation: popDot 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards 2.2s;
+                        opacity: 0;
+                    }
+                `}</style>
+
+            {/* Logo Container */}
+            <div className="logo-container absolute flex gap-[6px]">
+              {/* Left Col */}
+              <div className="flex flex-col gap-[6px]">
+                <div className="w-[18px] h-[30px] border-[4px] border-red-600 rounded-[6px] sq-1"></div>
+                <div className="w-[18px] h-[14px] border-[4px] border-red-600 rounded-[5px] sq-3"></div>
+              </div>
+              {/* Right Col */}
+              <div className="flex flex-col gap-[6px]">
+                <div className="w-[18px] h-[14px] border-[4px] border-red-600 rounded-[5px] sq-2"></div>
+                <div className="w-[18px] h-[30px] border-[4px] border-red-600 rounded-[6px] sq-4"></div>
+              </div>
             </div>
-            <h1 className="text-6xl font-black tracking-tighter text-white drop-shadow-md pt-4">
-              Stocky<span className="text-red-600">.</span>
-            </h1>
+
+            {/* Text Container */}
+            <div className="ml-16 pl-4 flex items-baseline">
+              <h1 className="text-6xl font-black tracking-tighter text-white drop-shadow-md text-reveal">
+                Stocky
+              </h1>
+              <div className="w-3 h-3 rounded-full bg-red-600 ml-1 mb-2 dot-reveal"></div>
+            </div>
           </div>
         </div>
       )}
