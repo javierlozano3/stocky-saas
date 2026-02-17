@@ -921,83 +921,85 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
 
                 {activeTab === 'inventory' && (
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                        <table className="w-full text-left">
-                            <thead className="bg-gray-50 border-b border-gray-100">
-                                <tr>
-                                    <th className="px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider">Variedad</th>
-                                    <th className="px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider text-center">Estado</th>
-                                    <th className="px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider text-right">Precios (Doz/Med)</th>
-                                    <th className="px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider text-right">Stock (Docenas)</th>
-                                    <th className="px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider text-right">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-50">
-                                {varieties.map(variety => (
-                                    <tr key={variety.id}
-                                        className={`hover:bg-gray-50/50 transition-colors ${variety.stock <= 0 ? 'bg-red-50' :
-                                            variety.stock <= 2 ? 'bg-orange-50' :
-                                                ''
-                                            }`}
-                                    >
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2">
-                                                {variety.stock <= 2.0 && variety.disponible && (
-                                                    <span title="Stock Bajo">
-                                                        <AlertTriangle size={16} className="text-red-500 animate-pulse" />
-                                                    </span>
-                                                )}
-                                                <div>
-                                                    <div className="font-bold text-gray-900">{variety.nombre}</div>
-                                                    <div className="text-xs text-gray-500 font-medium">{variety.categoria}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-center">
-                                            <button onClick={() => toggleAvailability(variety.id, variety.disponible)}>
-                                                {variety.disponible ? <ToggleRight className="text-green-500" size={32} /> : <ToggleLeft className="text-gray-300" size={32} />}
-                                            </button>
-                                        </td>
-                                        <td className="px-6 py-4 text-right font-mono font-medium text-gray-700 text-sm">
-                                            ${variety.precio} / ${variety.precioMedia}
-                                        </td>
-                                        <td className="px-6 py-4 text-right font-mono font-medium text-gray-700">
-                                            {variety.stock.toFixed(1)}
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button
-                                                    onClick={() => handleQuickStockUpdate(variety.id, -1, variety.stock)}
-                                                    className="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-100 font-bold text-sm transition-colors"
-                                                >
-                                                    -1
-                                                </button>
-                                                <button
-                                                    onClick={() => handleQuickStockUpdate(variety.id, 1, variety.stock)}
-                                                    className="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-100 font-bold text-sm transition-colors"
-                                                >
-                                                    +1
-                                                </button>
-                                                <div className="w-px h-4 bg-gray-200 mx-1"></div>
-                                                <button
-                                                    aria-label="Editar variedad"
-                                                    onClick={() => openEditModal(variety)}
-                                                    className="p-2 text-gray-400 hover:text-blue-600"
-                                                >
-                                                    <Edit size={16} />
-                                                </button>
-                                                <button
-                                                    aria-label="Eliminar variedad"
-                                                    onClick={() => handleDeleteVariety(variety.id)}
-                                                    className="p-2 text-gray-400 hover:text-red-600"
-                                                >
-                                                    <X size={16} />
-                                                </button>
-                                            </div>
-                                        </td>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead className="bg-gray-50 border-b border-gray-100">
+                                    <tr>
+                                        <th className="px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider">Variedad</th>
+                                        <th className="px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider text-center">Estado</th>
+                                        <th className="px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider text-right">Precios (Doz/Med)</th>
+                                        <th className="px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider text-right">Stock (Docenas)</th>
+                                        <th className="px-6 py-4 font-bold text-gray-500 text-xs uppercase tracking-wider text-right">Acciones</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50">
+                                    {varieties.map(variety => (
+                                        <tr key={variety.id}
+                                            className={`hover:bg-gray-50/50 transition-colors ${variety.stock <= 0 ? 'bg-red-50' :
+                                                variety.stock <= 2 ? 'bg-orange-50' :
+                                                    ''
+                                                }`}
+                                        >
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    {variety.stock <= 2.0 && variety.disponible && (
+                                                        <span title="Stock Bajo">
+                                                            <AlertTriangle size={16} className="text-red-500 animate-pulse" />
+                                                        </span>
+                                                    )}
+                                                    <div>
+                                                        <div className="font-bold text-gray-900">{variety.nombre}</div>
+                                                        <div className="text-xs text-gray-500 font-medium">{variety.categoria}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <button onClick={() => toggleAvailability(variety.id, variety.disponible)}>
+                                                    {variety.disponible ? <ToggleRight className="text-green-500" size={32} /> : <ToggleLeft className="text-gray-300" size={32} />}
+                                                </button>
+                                            </td>
+                                            <td className="px-6 py-4 text-right font-mono font-medium text-gray-700 text-sm">
+                                                ${variety.precio} / ${variety.precioMedia}
+                                            </td>
+                                            <td className="px-6 py-4 text-right font-mono font-medium text-gray-700">
+                                                {variety.stock.toFixed(1)}
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <button
+                                                        onClick={() => handleQuickStockUpdate(variety.id, -1, variety.stock)}
+                                                        className="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-100 font-bold text-sm transition-colors"
+                                                    >
+                                                        -1
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleQuickStockUpdate(variety.id, 1, variety.stock)}
+                                                        className="w-8 h-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-100 font-bold text-sm transition-colors"
+                                                    >
+                                                        +1
+                                                    </button>
+                                                    <div className="w-px h-4 bg-gray-200 mx-1"></div>
+                                                    <button
+                                                        aria-label="Editar variedad"
+                                                        onClick={() => openEditModal(variety)}
+                                                        className="p-2 text-gray-400 hover:text-blue-600"
+                                                    >
+                                                        <Edit size={16} />
+                                                    </button>
+                                                    <button
+                                                        aria-label="Eliminar variedad"
+                                                        onClick={() => handleDeleteVariety(variety.id)}
+                                                        className="p-2 text-gray-400 hover:text-red-600"
+                                                    >
+                                                        <X size={16} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 )}
 
