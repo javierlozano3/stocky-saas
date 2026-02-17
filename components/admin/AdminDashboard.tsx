@@ -40,9 +40,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
     const [user, setUser] = useState<FirebaseUser | null>(null);
 
     // ...
-    if (!user) {
-        return <AdminLogin onLogin={(u) => setUser(u)} empresaId={negocioId} />;
-    }
+
     const [activeTab, setActiveTab] = useState<'orders' | 'inventory' | 'reports' | 'settings'>('orders');
     const [varieties, setVarieties] = useState<Variety[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -572,6 +570,10 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
     })();
 
     const annualStats = getAnnualStats();
+
+    if (!user) {
+        return <AdminLogin onLogin={(u) => setUser(u)} empresaId={negocioId} />;
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row font-sans relative">
