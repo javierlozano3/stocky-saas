@@ -1,0 +1,12 @@
+{"users": [
+{
+  "localId": "ot3xcnPnIAbldUtvtr5L1VpG7HP2",
+  "email": "admin@empresa01.com",
+  "emailVerified": false,
+  "passwordHash": "8eb5VdR6F8/8O2tD9f56P0Rnj0XkBGe9uffharWl742SnI7RplGR78MdBG+oOVYn40tEZksaF2jWAz1UUF4N0A==",
+  "salt": "LVqGt2NrqAcRfw==",
+  "lastSignedInAt": "1771307106146",
+  "createdAt": "1771306158640",
+  "disabled": false,
+  "providerUserInfo": []
+}]}
