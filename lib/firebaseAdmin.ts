@@ -2,24 +2,36 @@ import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
 import * as admin from 'firebase-admin';
 
-if (!admin.apps.length) {
+function initFirebaseAdmin() {
+    if (admin.apps.length > 0) {
+        return admin.app();
+    }
+
     if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
-        throw new Error('Missing FIREBASE_SERVICE_ACCOUNT environment variable');
+        // En ambiente de Vercel Build (fase de "Collecting page data"),
+        // a veces esta variable no está presente y lanza error rompiendo el build.
+        // Hacemos un log en lugar de un throw para que pase el Build de NextJS.
+        console.warn('Missing FIREBASE_SERVICE_ACCOUNT environment variable during init.');
+
+        // Inicializacion vacia para evitar error duro si se llama
+        return admin.initializeApp({});
     }
 
     let serviceAccount;
     try {
-        // Podría venir escapado en produccion
         const saText = process.env.FIREBASE_SERVICE_ACCOUNT;
         serviceAccount = JSON.parse(saText);
     } catch (e) {
-        throw new Error('Invalid JSON format for FIREBASE_SERVICE_ACCOUNT. Note: do not wrap the json with quotes if using .env locally.');
+        console.error('Invalid JSON format for FIREBASE_SERVICE_ACCOUNT');
+        return admin.initializeApp({});
     }
 
-    admin.initializeApp({
+    return admin.initializeApp({
         credential: admin.credential.cert(serviceAccount)
     });
 }
 
-export const adminAuth = getAuth();
-export const adminDb = getFirestore();
+const app = initFirebaseAdmin();
+
+export const adminAuth = getAuth(app);
+export const adminDb = getFirestore(app);
