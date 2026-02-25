@@ -36,7 +36,7 @@ export const LeadCaptureModal = ({ isOpen, onClose, onSuccess }: LeadCaptureModa
             });
 
             // Guardar flag local para no volver a pedir
-            localStorage.setItem('stocky_lead_captured', 'true');
+            localStorage.setItem('mandor_lead_captured', 'true');
 
             onSuccess();
         } catch (error) {
@@ -55,7 +55,7 @@ export const LeadCaptureModal = ({ isOpen, onClose, onSuccess }: LeadCaptureModa
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">¡Estás a un paso!</h3>
                 <p className="text-gray-500 text-sm">
-                    Completa tus datos para acceder a la demostración interactiva completa de Stocky.
+                    Completa tus datos para acceder a la demostración interactiva completa de Mandor.
                 </p>
             </div>
 
@@ -108,7 +108,7 @@ export const LeadCaptureModal = ({ isOpen, onClose, onSuccess }: LeadCaptureModa
                         )}
                     </Button>
                     <p className="text-xs text-center text-gray-400 mt-4">
-                        Tus datos están seguros. Solo los usaremos para contactarte sobre Stocky.
+                        Tus datos están seguros. Solo los usaremos para contactarte sobre Mandor.
                     </p>
                 </div>
             </form>

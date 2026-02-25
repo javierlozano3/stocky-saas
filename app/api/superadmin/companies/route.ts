@@ -57,7 +57,7 @@ export async function POST(request: Request) {
         // 4. Configurar custom claims para ese usuario (le dice a firebase que rol tiene)
         await adminAuth.setCustomUserClaims(userRecord.uid, {
             empresaId: companyId,
-            role: 'admin'  // Para Stocky-SAAS la app frontend espera role admin a nivel empresa
+            role: 'admin'  // Para Mandor la app frontend espera role admin a nivel empresa
         });
 
         return NextResponse.json({ ok: true, uid: userRecord.uid });

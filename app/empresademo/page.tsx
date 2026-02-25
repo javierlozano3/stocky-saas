@@ -149,7 +149,7 @@ export default function EmpresaDemoPage() {
             <header className="text-center py-8 relative">
                 <Link href="/demo" className="absolute top-4 left-4 flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
                     <LayoutDashboard className="text-red-600" size={20} />
-                    <span className="font-bold text-xl tracking-tight text-gray-900">Stocky<span className="text-red-600">.</span> Demo</span>
+                    <span className="font-bold text-xl tracking-tight text-gray-900">Mandor<span className="text-red-600">.</span> Demo</span>
                 </Link>
                 <div className="w-16 h-16 bg-red-600 rounded-2xl mx-auto mb-4 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-red-200">
                     D

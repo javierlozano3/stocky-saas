@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-export const StockyLogo = ({ className = "", size = 32 }: { className?: string, size?: number }) => {
+export const MandorLogo = ({ className = "", size = 32 }: { className?: string, size?: number }) => {
     // Proporciones basadas en el grid 32x32
     // Left col width: ~10px. Right col width: ~10px. Gap: 4px.
     // Total dim: ~24px wide.

@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 
 const JWT_SECRET = new TextEncoder().encode(
-    process.env.JWT_SECRET || 'stocky-superadmin-secret-dev-only'
+    process.env.JWT_SECRET || 'mandor-superadmin-secret-dev-only'
 );
 
 export type SessionPayload = {
@@ -13,8 +13,8 @@ export type SessionPayload = {
 export async function getSuperAdminSession(req?: NextRequest): Promise<SessionPayload | null> {
     const cookieStore = await cookies();
     const token = req
-        ? req.cookies.get('stocky_sa_session')?.value
-        : cookieStore.get('stocky_sa_session')?.value;
+        ? req.cookies.get('mandor_sa_session')?.value
+        : cookieStore.get('mandor_sa_session')?.value;
 
     if (!token) return null;
 
@@ -34,7 +34,7 @@ export async function createSuperAdminSession(payload: SessionPayload) {
         .sign(JWT_SECRET);
 
     const cookieStore = await cookies();
-    cookieStore.set('stocky_sa_session', token, {
+    cookieStore.set('mandor_sa_session', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
@@ -47,5 +47,5 @@ export async function createSuperAdminSession(payload: SessionPayload) {
 
 export async function clearSuperAdminSession() {
     const cookieStore = await cookies();
-    cookieStore.delete('stocky_sa_session');
+    cookieStore.delete('mandor_sa_session');
 }

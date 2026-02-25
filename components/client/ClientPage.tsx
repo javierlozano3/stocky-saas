@@ -226,7 +226,7 @@ export const ClientPage = ({ negocioId }: { negocioId: string }) => {
             <header className="text-center py-8 relative">
                 <Link href="/" className="absolute top-4 left-4 flex items-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
                     <LayoutDashboard className="text-red-600" size={20} />
-                    <span className="font-bold text-xl tracking-tight text-gray-900">Stocky<span className="text-red-600">.</span></span>
+                    <span className="font-bold text-xl tracking-tight text-gray-900">Mandor<span className="text-red-600">.</span></span>
                 </Link>
                 {businessConfig.logoUrl ? (
                     <img

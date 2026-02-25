@@ -56,7 +56,7 @@ export default function AdminDemoPage() {
             <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 p-6 sticky top-0 h-screen">
                 <div className="flex items-center gap-2 mb-8 px-2">
                     <LayoutDashboard className="text-red-600" />
-                    <span className="font-bold text-xl tracking-tight text-gray-900">Stocky<span className="text-red-600">.</span> Demo</span>
+                    <span className="font-bold text-xl tracking-tight text-gray-900">Mandor<span className="text-red-600">.</span> Demo</span>
                 </div>
 
                 <nav className="space-y-2">
@@ -69,7 +69,7 @@ export default function AdminDemoPage() {
                     <div className="bg-blue-50 p-4 rounded-xl">
                         <p className="text-xs text-blue-800 font-bold mb-2">¿Te gusta el panel?</p>
                         <Link href="/" className="text-xs bg-blue-600 text-white px-3 py-2 rounded-lg block text-center hover:bg-blue-700 font-medium">
-                            Contratar Stocky
+                            Contratar Mandor
                         </Link>
                     </div>
                 </div>

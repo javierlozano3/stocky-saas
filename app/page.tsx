@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui/Modal';
 import { LeadCaptureModal } from '@/components/marketing/LeadCaptureModal';
-import { StockyLogo } from '@/components/ui/StockyLogo';
+import { MandorLogo } from '@/components/ui/MandorLogo';
 import { Smartphone, LayoutDashboard, ArrowRight, CheckCircle } from 'lucide-react';
 
 export default function Home() {
@@ -22,7 +22,7 @@ export default function Home() {
   useEffect(() => {
     // Check if lead was captured previously
     if (typeof window !== 'undefined') {
-      const captured = localStorage.getItem('stocky_lead_captured');
+      const captured = localStorage.getItem('mandor_lead_captured');
       if (captured === 'true') {
         setHasLeadCaptured(true);
       }
@@ -123,7 +123,7 @@ export default function Home() {
             {/* Text Container */}
             <div className="ml-16 pl-4 flex items-baseline">
               <h1 className="text-6xl font-black tracking-tighter text-white drop-shadow-md text-reveal">
-                Stocky
+                Mandor
               </h1>
               <div className="w-3 h-3 rounded-full bg-red-600 ml-1 mb-2 dot-reveal"></div>
             </div>
@@ -135,9 +135,9 @@ export default function Home() {
       <nav className={`flex justify-between items-center p-6 max-w-7xl mx-auto z-50 relative transition-opacity duration-1000 ${showIntro ? 'opacity-0' : 'opacity-100'}`}>
         <div className="font-bold text-2xl tracking-tighter flex items-center gap-3 group cursor-pointer">
           <div className="p-2 rounded-lg group-hover:bg-gray-800 transition-colors border border-transparent group-hover:border-gray-700">
-            <StockyLogo className="w-6 h-6" />
+            <MandorLogo className="w-6 h-6" />
           </div>
-          <span>Stocky<span className="text-red-600">.</span></span>
+          <span>Mandor<span className="text-red-600">.</span></span>
         </div>
         <div className="space-x-4 text-sm font-medium text-gray-400 flex items-center">
           <a href="#features" className="hover:text-white transition-colors">Características</a>
@@ -250,7 +250,7 @@ export default function Home() {
       </section>
 
       <footer className="py-12 text-center text-gray-500 text-sm border-t border-gray-800">
-        © 2026 Stocky SaaS. Built for <a href="https://vynex.ar" target="_blank" rel="noopener noreferrer" className="hover:text-red-500 transition-colors font-bold">VYNEX</a>.
+        © 2026 Mandor SaaS. Built for <a href="https://vynex.ar" target="_blank" rel="noopener noreferrer" className="hover:text-red-500 transition-colors font-bold">VYNEX</a>.
       </footer>
 
       {/* --- MODALS --- */}

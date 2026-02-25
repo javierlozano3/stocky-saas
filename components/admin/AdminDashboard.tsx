@@ -581,7 +581,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
             <div className="md:hidden bg-white p-4 flex items-center justify-between border-b border-gray-200 sticky top-0 z-20 shadow-sm">
                 <div className="flex items-center gap-2">
                     <LayoutDashboard className="text-red-600" size={24} />
-                    <span className="font-bold text-xl tracking-tight text-gray-900">Stocky<span className="text-red-600">.</span></span>
+                    <span className="font-bold text-xl tracking-tight text-gray-900">Mandor<span className="text-red-600">.</span></span>
                 </div>
                 <button
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -608,7 +608,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                 <div className="flex justify-between items-center mb-8">
                     <Link href="/" className="flex items-center gap-2 px-2 hover:opacity-80 transition-opacity">
                         <LayoutDashboard className="text-red-600" />
-                        <span className="font-bold text-xl tracking-tight text-gray-900">Stocky<span className="text-red-600">.</span></span>
+                        <span className="font-bold text-xl tracking-tight text-gray-900">Mandor<span className="text-red-600">.</span></span>
                     </Link>
                     <button
                         onClick={() => setIsMobileMenuOpen(false)}
@@ -1308,7 +1308,7 @@ export const AdminDashboard = ({ negocioId }: { negocioId: string }) => {
                                     <label className="block text-sm font-medium text-gray-700 mb-2">Color de Marca</label>
                                     <div className="flex flex-wrap gap-3">
                                         {[
-                                            { name: 'Rojo Stocky', val: '#DC2626' },
+                                            { name: 'Rojo Mandor', val: '#DC2626' },
                                             { name: 'Azul', val: '#2563EB' },
                                             { name: 'Verde', val: '#16A34A' },
                                             { name: 'Naranja', val: '#EA580C' },

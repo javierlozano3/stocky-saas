@@ -161,7 +161,7 @@ export default function SuperAdminDashboard() {
                 <div className="flex items-center gap-3 text-white mb-10 w-full border-b border-slate-800 pb-6">
                     <ShieldCheck size={32} className="text-red-500" />
                     <div>
-                        <h2 className="font-bold tracking-wider leading-none">STOCKY</h2>
+                        <h2 className="font-bold tracking-wider leading-none">MANDOR</h2>
                         <span className="text-xs text-slate-400 font-medium">SUPER ADMIN</span>
                     </div>
                 </div>
