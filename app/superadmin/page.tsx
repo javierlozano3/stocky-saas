@@ -11,7 +11,7 @@ export default function SuperAdminDashboard() {
     const [loading, setLoading] = useState(true);
 
     const [showNewModal, setShowNewModal] = useState(false);
-    const [newComp, setNewComp] = useState({ id: '', name: '', email: '', password: '' });
+    const [newComp, setNewComp] = useState({ id: '', name: '', email: '', password: '', plan: 'emprendedor' });
 
     const [editingUser, setEditingUser] = useState<any>(null);
     const [editData, setEditData] = useState({ password: '' });
@@ -20,7 +20,7 @@ export default function SuperAdminDashboard() {
     const [newUser, setNewUser] = useState({ email: '', password: '', displayName: '' });
 
     const [editingCompany, setEditingCompany] = useState<any>(null);
-    const [compEditData, setCompEditData] = useState({ name: '' });
+    const [compEditData, setCompEditData] = useState({ name: '', plan: 'emprendedor' });
 
     const [deletingComp, setDeletingComp] = useState<string | null>(null);
 
@@ -56,7 +56,8 @@ export default function SuperAdminDashboard() {
                     companyId: newComp.id,
                     companyName: newComp.name,
                     email: newComp.email,
-                    password: newComp.password
+                    password: newComp.password,
+                    plan: newComp.plan
                 })
             });
             if (res.ok) {
@@ -124,7 +125,7 @@ export default function SuperAdminDashboard() {
             await fetch(`/api/superadmin/companies/${editingCompany.id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: compEditData.name })
+                body: JSON.stringify({ name: compEditData.name, plan: compEditData.plan })
             });
             setEditingCompany(null);
             fetchCompanies();
@@ -199,9 +200,14 @@ export default function SuperAdminDashboard() {
                                         <div className="flex items-center gap-3">
                                             <h3 className="font-bold text-slate-900 text-lg flex items-center gap-2">
                                                 {company.name}
+                                                {company.plan === 'business' ? (
+                                                    <span className="text-[10px] bg-blue-100 text-blue-700 font-black px-2 py-0.5 rounded uppercase leading-none border border-blue-200">Business</span>
+                                                ) : (
+                                                    <span className="text-[10px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded uppercase leading-none border border-slate-200">Emprendedor</span>
+                                                )}
                                                 {company.paused && <span className="text-[10px] bg-amber-500 text-white px-2 py-0.5 rounded uppercase leading-none">Pausada</span>}
                                             </h3>
-                                            <button onClick={() => { setEditingCompany(company); setCompEditData({ name: company.name }); }} className="text-slate-400 hover:text-slate-600">
+                                            <button onClick={() => { setEditingCompany(company); setCompEditData({ name: company.name, plan: company.plan || 'emprendedor' }); }} className="text-slate-400 hover:text-slate-600">
                                                 <FileEdit size={16} />
                                             </button>
                                         </div>
@@ -289,6 +295,14 @@ export default function SuperAdminDashboard() {
                                 <input className="w-full border rounded-lg p-2.5 text-sm bg-slate-50 focus:bg-white focus:ring-2 outline-none"
                                     value={newComp.name} onChange={e => setNewComp({ ...newComp, name: e.target.value })} placeholder="Pizzería Pepe" />
                             </div>
+                            <div>
+                                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Plan Contratado</label>
+                                <select className="w-full border rounded-lg p-2.5 text-sm bg-slate-50 focus:bg-white focus:ring-2 outline-none"
+                                    value={newComp.plan} onChange={e => setNewComp({ ...newComp, plan: e.target.value })}>
+                                    <option value="emprendedor">Emprendedor</option>
+                                    <option value="business">Business</option>
+                                </select>
+                            </div>
                             <div className="pt-4 border-t border-slate-100">
                                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Email del Admin</label>
                                 <input className="w-full border rounded-lg p-2.5 text-sm bg-slate-50 focus:bg-white focus:ring-2 outline-none"
@@ -342,7 +356,15 @@ export default function SuperAdminDashboard() {
                             <div>
                                 <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Nombre Comercial</label>
                                 <input className="w-full border rounded-lg p-2.5 text-sm bg-slate-50 focus:bg-white focus:ring-2 outline-none"
-                                    type="text" value={compEditData.name} onChange={e => setCompEditData({ name: e.target.value })} />
+                                    type="text" value={compEditData.name} onChange={e => setCompEditData({ ...compEditData, name: e.target.value })} />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-slate-700 uppercase mb-1">Plan de la Empresa</label>
+                                <select className="w-full border rounded-lg p-2.5 text-sm bg-slate-50 focus:bg-white focus:ring-2 outline-none"
+                                    value={compEditData.plan} onChange={e => setCompEditData({ ...compEditData, plan: e.target.value })}>
+                                    <option value="emprendedor">Emprendedor</option>
+                                    <option value="business">Business</option>
+                                </select>
                             </div>
                             <Button fullWidth onClick={handleUpdateCompany} className="mt-4 bg-slate-900 hover:bg-slate-800 py-3 text-white font-bold rounded-xl shadow-lg">
                                 Guardar Archivo

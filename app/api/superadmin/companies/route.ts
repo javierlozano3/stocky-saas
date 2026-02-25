@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     try {
         const body = await request.json();
-        const { companyId, email, password, companyName } = body;
+        const { companyId, email, password, companyName, plan } = body;
 
         if (!companyId || !email || !password) {
             return NextResponse.json({ error: 'Faltan datos requeridos (companyId, email, password)' }, { status: 400 });
@@ -30,6 +30,7 @@ export async function POST(request: Request) {
         await docRef.set({
             config: {
                 nombre: companyName || companyId,
+                plan: plan || 'emprendedor',
                 nombreTitular: 'Dueño',
                 whatsapp: '',
                 instagram: '',

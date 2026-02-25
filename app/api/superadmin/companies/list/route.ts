@@ -18,6 +18,7 @@ export async function GET() {
             const data = doc.data();
             dbCompanies[doc.id] = {
                 name: data.config?.nombre || doc.id,
+                plan: data.config?.plan || 'emprendedor',
                 paused: !!data.config?.paused,
             };
         });
@@ -45,6 +46,7 @@ export async function GET() {
             companiesInfo[empresaId] = {
                 id: empresaId,
                 name: dbCompanies[empresaId].name,
+                plan: dbCompanies[empresaId].plan,
                 paused: dbCompanies[empresaId].paused,
                 asignedUsers: []
             };
@@ -55,6 +57,7 @@ export async function GET() {
                 companiesInfo[u.empresaId] = {
                     id: u.empresaId,
                     name: dbCompanies[u.empresaId]?.name || 'Sin nombre DB',
+                    plan: dbCompanies[u.empresaId]?.plan || 'emprendedor',
                     paused: dbCompanies[u.empresaId]?.paused || false,
                     asignedUsers: []
                 };

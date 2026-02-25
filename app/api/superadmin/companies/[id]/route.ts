@@ -11,7 +11,7 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
 
     try {
         const body = await request.json();
-        const { name, paused } = body;
+        const { name, paused, plan } = body;
 
         const docRef = adminDb.collection('empresas').doc(id);
         const updateData: any = {};
@@ -21,6 +21,9 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
         }
         if (typeof paused === 'boolean') {
             updateData['config.paused'] = paused;
+        }
+        if (typeof plan === 'string') {
+            updateData['config.plan'] = plan;
         }
 
         if (Object.keys(updateData).length > 0) {
