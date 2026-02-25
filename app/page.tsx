@@ -74,7 +74,7 @@ export default function Home() {
                     }
                     @keyframes slideLeft {
                         0% { transform: translateX(0); }
-                        100% { transform: translateX(-90px); }
+                        100% { transform: translateX(-110px); }
                     }
                      @keyframes revealText {
                         0% { opacity: 0; transform: translateX(-20px); filter: blur(10px); }
@@ -121,7 +121,7 @@ export default function Home() {
             </div>
 
             {/* Text Container */}
-            <div className="ml-16 pl-4 flex items-baseline">
+            <div className="ml-24 pl-2 flex items-baseline">
               <h1 className="text-6xl font-black tracking-tighter text-white drop-shadow-md text-reveal">
                 Mandor
               </h1>
@@ -133,7 +133,7 @@ export default function Home() {
 
       {/* Nav */}
       <nav className={`flex justify-between items-center p-6 max-w-7xl mx-auto z-50 relative transition-opacity duration-1000 ${showIntro ? 'opacity-0' : 'opacity-100'}`}>
-        <div className="font-bold text-2xl tracking-tighter flex items-center gap-3 group cursor-pointer">
+        <div className="font-bold text-2xl tracking-tighter flex items-center gap-1 group cursor-pointer">
           <div className="p-2 rounded-lg group-hover:bg-gray-800 transition-colors border border-transparent group-hover:border-gray-700">
             <MandorLogo className="w-6 h-6" />
           </div>
